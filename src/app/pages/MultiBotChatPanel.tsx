@@ -6,8 +6,8 @@ import { BotId } from '../bots'
 import ConversationPanel from '../components/Chat/ConversationPanel'
 
 const MultiBotChatPanel: FC = () => {
-  const chatgptChat = useChat('chatgpt')
-  const bingChat = useChat('bing')
+  const chatgptChat = useChat(BotId.CHATGPT)
+  const bingChat = useChat(BotId.BING)
 
   const generating = useMemo(
     () => chatgptChat.generating || bingChat.generating,
@@ -31,7 +31,7 @@ const MultiBotChatPanel: FC = () => {
   return (
     <div className="grid grid-cols-2 grid-rows-[1fr_auto] overflow-hidden gap-5">
       <ConversationPanel
-        botId="chatgpt"
+        botId={BotId.CHATGPT}
         messages={chatgptChat.messages}
         onUserSendMessage={onUserSendMessage}
         generating={chatgptChat.generating}
@@ -40,7 +40,7 @@ const MultiBotChatPanel: FC = () => {
         resetConversation={chatgptChat.resetConversation}
       />
       <ConversationPanel
-        botId="bing"
+        botId={BotId.BING}
         messages={bingChat.messages}
         onUserSendMessage={onUserSendMessage}
         generating={bingChat.generating}
