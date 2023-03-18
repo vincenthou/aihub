@@ -1,9 +1,8 @@
 import { useAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 import { chatFamily } from '~app/state'
-import { ChatMessageModel } from '~types'
+import { BotId, ChatMessageModel } from '~types'
 import { uuid } from '~utils'
-import { BotId } from '../bots'
 
 export function useChat(botId: BotId, page = 'singleton') {
   const chatAtom = useMemo(() => chatFamily({ botId, page }), [botId, page])
@@ -88,6 +87,7 @@ export function useChat(botId: BotId, page = 'singleton') {
   }, [chatState.abortController, chatState.generatingMessageId, setChatState, updateMessage])
 
   return {
+    botId,
     messages: chatState.messages,
     sendMessage,
     resetConversation,

@@ -1,8 +1,6 @@
-# ChatHub
+# AIHub
 
-ChatHub is an all-in-one chatbot client
-
-[Install from Chrome Web Store](https://chathub.gg)
+AIHub - All-in-one AI client
 
 ## Screenshot
 

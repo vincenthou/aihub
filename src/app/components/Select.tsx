@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import { FC, Fragment, useMemo, useState } from 'react'
+import { Fragment, useMemo } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 

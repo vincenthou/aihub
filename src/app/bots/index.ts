@@ -1,12 +1,7 @@
 import { BingWebBot } from './bing'
 import { ChatGPTBot } from './chatgpt'
 import { ChatGPTWebBot } from './chatgpt-webapp'
-
-export enum BotId {
-  CHATGPT = 'chatgpt',
-  BING = 'bing',
-  GPT4 = 'gpt-4',
-}
+import { BotId } from '~types'
 
 const botFactory = {
   [BotId.CHATGPT]: ChatGPTBot,
@@ -14,6 +9,4 @@ const botFactory = {
   [BotId.GPT4]: ChatGPTWebBot
 }
 
-export function createBot(botId: BotId) {
-  return new botFactory[botId](botId)
-}
+export const createBot = (botId: BotId) => new botFactory[botId](botId)

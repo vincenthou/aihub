@@ -3,7 +3,8 @@ import cx from 'classnames'
 import feedbackIcon from '~/assets/icons/feedback.svg'
 import settingIcon from '~/assets/icons/setting.svg'
 import logo from '~/assets/logo.svg'
-import NavLink from './NavLink'
+import logoDark from '~/assets/logo-dark.svg'
+import NavLink from '~app/components/Sidebar/NavLink'
 
 function IconButton(props: { icon: string; active?: boolean }) {
   return (
@@ -13,24 +14,20 @@ function IconButton(props: { icon: string; active?: boolean }) {
         props.active ? 'bg-[#5E95FC]' : 'bg-[#F2F2F2] bg-opacity-20',
       )}
     >
-      <img src={props.icon} className="w-6 h-6" />
+      <img src={props.icon} className="w-5 h-5" />
     </div>
   )
 }
 
 function Sidebar() {
   return (
-    <aside className="flex flex-col pr-5">
-      <img src={logo} className="w-[79px] mb-[55px] mt-[66px] ml-5" />
-      <div className="flex flex-col gap-3">
-        <NavLink to="/" text="All-In-One" />
-        <NavLink to="/chat/$botId" params={{ botId: 'chatgpt' }} text="ChatGPT" />
-        <NavLink to="/chat/$botId" params={{ botId: 'bing' }} text="Bing" />
-        <NavLink to="/chat/$botId" params={{ botId: 'gpt-4' }} text="GPT-4" />
-      </div>
-      <div className="mt-auto">
-        <hr className="border-[#ffffff4d]" />
-        <div className="flex flex-row mt-5 gap-[10px] mb-6">
+    <aside className="flex flex-col px-2">
+      <div className="flex justify-between mt-3">
+        <NavLink isAll>
+          <img src={logo} className="w-10 block dark:hidden" />
+          <img src={logoDark} className="w-10 hidden dark:block" />
+        </NavLink>
+        <div className="flex flex-row mt-1 ml-3 gap-[10px]">
           <a href="https://github.com/wong2/chathub/issues" target="_blank" rel="noreferrer" title="Feedback">
             <IconButton icon={feedbackIcon} />
           </a>
@@ -38,6 +35,9 @@ function Sidebar() {
             <IconButton icon={settingIcon} />
           </Link>
         </div>
+      </div>
+      <div className="mt-auto">
+        <hr className="border-[#ffffff4d]" />
       </div>
     </aside>
   )

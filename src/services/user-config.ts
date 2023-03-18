@@ -2,7 +2,6 @@ import { defaults } from 'lodash-es'
 import Browser from 'webextension-polyfill'
 
 export enum StartupPage {
-  All = 'all',
   ChatGPT = 'chatgpt',
   Bing = 'bing',
   GPT4 = 'gpt-4',
@@ -18,7 +17,7 @@ const userConfigWithDefaultValue = {
   openaiApiKey: '',
   openaiApiHost: 'https://api.openai.com',
   chatgptApiTemperature: 0.6,
-  startupPage: StartupPage.All,
+  startupPage: StartupPage.Bing,
   bingConversationStyle: BingConversationStyle.Balanced,
 }
 

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useChat } from '~app/hooks/use-chat'
-import { BotId } from '../bots'
+import { BotId } from '~types'
 import ConversationPanel from '../components/Chat/ConversationPanel'
 
 interface Props {

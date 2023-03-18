@@ -1,8 +1,8 @@
-import { FC } from 'react'
+import { forwardRef, useRef, useImperativeHandle } from 'react'
 import cx from 'classnames'
+import html2canvas from "html2canvas"
 import ScrollToBottom from 'react-scroll-to-bottom'
-import { BotId } from '~app/bots'
-import { ChatMessageModel } from '~types'
+import { BotId, ChatMessageModel } from '~types'
 import ChatMessageCard from './ChatMessageCard'
 
 interface Props {
@@ -11,16 +11,54 @@ interface Props {
   className?: string
 }
 
-const ChatMessageList: FC<Props> = (props) => {
+const exportAsImage = (element: HTMLElement, filename: string) => {
+  // 调用html2canvas函数
+  html2canvas(element, { 
+    scrollX: 0,
+    scrollY: 0,
+    width: element.scrollWidth,
+    height: element.scrollHeight + 200, // 留点余量
+  }).then(canvas => {
+    // 创建一个虚拟的a标签
+    const link = document.createElement("a")
+    // 设置a标签的href属性为图片数据
+    link.href = canvas.toDataURL()
+    // 设置a标签的download属性为文件名
+    link.download = filename
+    // 模拟点击a标签
+    link.click()
+  })
+}
+
+interface ExportChatHandle {
+  export: () => void
+}
+
+const ChatMessageList = forwardRef<ExportChatHandle, Props>((props, ref) => {
+  const messagesRef = useRef<HTMLDivElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    export() {
+      exportAsImage(messagesRef.current, "chat-history.png")
+    }
+  }))
+
   return (
     <ScrollToBottom className="overflow-auto h-full">
-      <div className={cx('flex flex-col gap-3 h-full', props.className)}>
-        {props.messages.map((message, index) => {
-          return <ChatMessageCard key={message.id} message={message} className={index === 0 ? 'mt-5' : undefined} />
-        })}
+      <div ref={messagesRef} className={cx('flex flex-col gap-3 h-full', props.className)}>
+        {props.messages.map((message, index) => (
+          <ChatMessageCard 
+            key={message.id}
+            botId={props.botId}
+            message={message}
+            className={index === 0 ? 'mt-5' : undefined}
+          />
+        ))}
       </div>
     </ScrollToBottom>
   )
-}
+})
+
+ChatMessageList.displayName = 'ChatMessageList'
 
 export default ChatMessageList

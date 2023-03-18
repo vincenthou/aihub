@@ -1,17 +1,20 @@
 import chatgptLogo from '~/assets/chatgpt-logo.svg'
 import bingLogo from '~/assets/bing-logo.svg'
-import { BotId } from './bots'
+import { BotId, BotProps } from '~types'
 
-export const CHATBOTS: Record<BotId, { name: string; avatar: any }> = {
-  chatgpt: {
+export const CHATBOTS: Record<BotId, BotProps> = {
+  [BotId.CHATGPT]: {
+    id: BotId.CHATGPT,
     name: 'ChatGPT',
     avatar: chatgptLogo,
   },
-  bing: {
+  [BotId.BING]: {
+    id: BotId.BING,
     name: 'Bing',
     avatar: bingLogo,
   },
-  'gpt-4': {
+  [BotId.GPT4]: {
+    id: BotId.GPT4,
     name: 'GPT-4',
     avatar: chatgptLogo,
   },

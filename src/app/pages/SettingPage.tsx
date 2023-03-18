@@ -5,8 +5,9 @@ import Button from '~app/components/Button'
 import { Input } from '~app/components/Input'
 import Select from '~app/components/Select'
 import { getTokenUsage } from '~services/storage'
-import { BingConversationStyle, getUserConfig, StartupPage, updateUserConfig, UserConfig } from '~services/user-config'
+import { BingConversationStyle, getUserConfig, updateUserConfig, UserConfig } from '~services/user-config'
 import { formatAmount, formatDecimal } from '~utils/format'
+import { CHATBOTS } from '~app/consts'
 import PagePanel from '../components/Page'
 
 function KDB(props: { text: string }) {
@@ -59,7 +60,7 @@ function SettingPage() {
       apiHost = undefined
     }
     await updateUserConfig({ ...userConfig!, openaiApiHost: apiHost })
-    toast.success('Saved')
+    toast.success('保存成功')
     setTimeout(() => location.reload(), 500)
   }, [userConfig])
 
@@ -85,12 +86,10 @@ function SettingPage() {
           <p className="font-bold mb-2 text-xl">Startup page</p>
           <div className="w-[200px]">
             <Select
-              options={[
-                { name: 'All-In-One', value: StartupPage.All },
-                { name: 'ChatGPT', value: StartupPage.ChatGPT },
-                { name: 'Bing', value: StartupPage.Bing },
-                { name: 'GPT-4', value: StartupPage.GPT4 },
-              ]}
+              options={Object.entries(CHATBOTS).map(([key, value]) => ({
+                name: value.name,
+                value: key,
+              }))}
               value={userConfig.startupPage}
               onChange={(v) => updateConfigValue({ startupPage: v })}
             />
@@ -150,7 +149,7 @@ function SettingPage() {
           </div>
         </div>
       </div>
-      <Button color={dirty ? 'primary' : 'flat'} text="Save" className="w-fit mt-10 mb-5" onClick={save} />
+      <Button color={dirty ? 'primary' : 'flat'} text="保存" className="w-fit mt-10 mb-5" onClick={save} />
       <Toaster position="top-right" />
     </PagePanel>
   )

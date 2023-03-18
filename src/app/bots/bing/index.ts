@@ -82,12 +82,12 @@ export class BingWebBot extends AbstractBot {
           params.onEvent({ type: 'DONE' })
           wsp.removeAllListeners()
           wsp.close()
-        } else if (event.type === 1) {
+        } else if (event.type === 1 && event?.arguments[0]?.messages) {
           const text = convertMessageToMarkdown(event.arguments[0].messages[0])
           params.onEvent({ type: 'UPDATE_ANSWER', data: { text } })
         } else if (event.type === 2) {
           const messages = event.item.messages as ChatResponseMessage[]
-          const limited = messages.some((message) => message.contentOrigin === 'TurnLimiter')
+          const limited = messages?.some((message) => message.contentOrigin === 'TurnLimiter')
           if (limited) {
             params.onEvent({
               type: 'ERROR',

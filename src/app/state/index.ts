@@ -1,7 +1,7 @@
 import { atomWithImmer } from 'jotai-immer'
 import { atomFamily } from 'jotai/utils'
-import { BotId, createBot } from '~app/bots'
-import { ChatMessageModel } from '~types'
+import { createBot } from '~app/bots'
+import { BotId, ChatMessageModel } from '~types'
 
 type Param = { botId: BotId; page: string }
 

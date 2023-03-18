@@ -1,4 +1,4 @@
-import { BotId } from '~app/bots'
+import { BotId } from '~types'
 import { ChatError } from '~utils/errors'
 
 export interface ChatMessageModel {

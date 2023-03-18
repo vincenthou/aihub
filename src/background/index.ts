@@ -10,7 +10,7 @@ async function openAppPage() {
     return
   }
   const { startupPage } = await getUserConfig()
-  const hash = startupPage === StartupPage.All ? '' : `#/chat/${startupPage}`
+  const hash = `#/chat/${startupPage}`
   await Browser.tabs.create({ url: `app.html${hash}` })
 }
 
