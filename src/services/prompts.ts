@@ -5,6 +5,7 @@ export interface Prompt {
   id: string
   title: string
   prompt: string
+  contributor: string
 }
 
 export async function loadLocalPrompts() {

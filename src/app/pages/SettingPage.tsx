@@ -5,7 +5,7 @@ import Button from '~app/components/Button'
 import { Input } from '~app/components/Input'
 import Select from '~app/components/Select'
 import { getTokenUsage } from '~services/storage'
-import { BingConversationStyle, getUserConfig, updateUserConfig, UserConfig } from '~services/user-config'
+import { BingConversationStyle, getUserConfig, StartupPage, updateUserConfig, UserConfig } from '~services/user-config'
 import { formatAmount, formatDecimal } from '~utils/format'
 import { CHATBOTS } from '~app/consts'
 import PagePanel from '../components/Page'
@@ -91,7 +91,7 @@ function SettingPage() {
                 value: key,
               }))}
               value={userConfig.startupPage}
-              onChange={(v) => updateConfigValue({ startupPage: v })}
+              onChange={(v) => updateConfigValue({ startupPage: (v as StartupPage) })}
             />
           </div>
         </div>

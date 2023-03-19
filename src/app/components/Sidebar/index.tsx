@@ -22,8 +22,8 @@ function IconButton(props: { icon: string; active?: boolean }) {
   )
 }
 
-const Sidebar: FC<{ chatId: string }> = (props) => {
-  const { query, remove } = useContext(ConversationsContext)
+const Sidebar: FC<{ chatId?: string }> = (props) => {
+  const conversations = useContext(ConversationsContext)
 
   return (
     <aside className="flex flex-col px-2">
@@ -43,7 +43,7 @@ const Sidebar: FC<{ chatId: string }> = (props) => {
       </div>
       <div className="flex-1 py-3">
       {
-        query.data.length ? query.data.map(
+        conversations?.query.data.length ? conversations?.query.data.map(
           (conversation: ChatConversation) => (
             <ConversationHistoryItem
               key={conversation.conversationId}
@@ -51,7 +51,7 @@ const Sidebar: FC<{ chatId: string }> = (props) => {
               chatId={props.chatId}
               botId={conversation.botId}
               name={conversation?.name}
-              remove={remove}
+              remove={conversations.remove}
             />
           )
         ) : <p className="mt-5 flex justify-center text-dark text-sm dark:text-white/50">暂无历史对话</p>

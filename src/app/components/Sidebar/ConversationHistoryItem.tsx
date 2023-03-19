@@ -8,7 +8,7 @@ import { BotId } from '~types'
 interface Props {
   botId: BotId
   id: string
-  chatId: string
+  chatId?: string
   name?: string
   remove: (id: string) => void
 }
@@ -24,7 +24,12 @@ const ConversationHistoryItem: FC<Props> = (props) => {
           props.id === props.chatId ? 'bg-gray-600' : '',
           'flex px-3 items-center relative rounded-md break-all group'
         )}>
-          <Link className="flex py-3 gap-3 cursor-pointer flex-1" to={`/chat/${props.botId}?chatId=${props.id}`} >
+          <Link
+            className="flex py-3 gap-3 cursor-pointer flex-1"
+            to="/chat/$botId"
+            params={{ botId: props.botId }}
+            search={{ chatId: props.id }}
+          >
             <BsChatLeft size={16} />
             <div className="flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative text-left text-xs">
               {props.name || '未命名对话'}

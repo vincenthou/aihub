@@ -41,8 +41,8 @@ const ConversationPanel: FC<Props> = (props) => {
   const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[botId])
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const messageText = messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
-  const messagesRef = useRef(null);
-  const { create } = useContext(ConversationsContext)
+  const messagesRef = useRef<{ export: () => void }>(null);
+  const conversations = useContext(ConversationsContext)
 
   const context: ConversationContextValue = useMemo(() => {
     return {
@@ -64,10 +64,10 @@ const ConversationPanel: FC<Props> = (props) => {
   const setConversationName = useCallback((name: string) => {
     // 也可以在这里通过 chat.getConversationContext 传更完整会话上下文
     chat.name = name
-    create(chat)
+    conversations?.create(chat)
     resetConversationCallback()
     setIsDialogOpen(false)
-  }, [chat, create, resetConversationCallback])
+  }, [chat, conversations?.create, resetConversationCallback])
 
   const onCreateNewConversation = () => {
     if (props.isHistory) {

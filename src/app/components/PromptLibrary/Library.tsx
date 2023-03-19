@@ -78,7 +78,7 @@ function LocalPrompts(props: { insertPrompt: (text: string) => void }) {
 
   const createPrompt = useCallback(
     async (title: string, prompt: string) => {
-      await addLocalPrompt({ id: uuid(), title, prompt })
+      await addLocalPrompt({ id: uuid(), title, prompt, contributor: '本地' })
       localPromptsQuery.mutate()
       setShowForm(false)
     },

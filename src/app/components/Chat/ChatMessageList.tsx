@@ -42,7 +42,7 @@ interface ExportChatHandle {
 const ChatMessageList = forwardRef<ExportChatHandle, Props>((props, ref) => {
   const messagesRef = useRef<HTMLDivElement>(null);
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle<ExportChatHandle, ExportChatHandle>(ref, () => ({
     export() {
       exportAsImage(messagesRef.current, "chat-history.png")
     }

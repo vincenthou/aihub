@@ -17,13 +17,15 @@ export const SingleBotChatPanel: FC<{ botId: BotId }> = (props) => {
 
 export const HistorySingleBotChatPanel: FC<{ botId: BotId, chatId: string }> = (props) => {
   const { botId, chatId } = props
-  const { query } = useContext(ConversationsContext)
+  const conversations = useContext(ConversationsContext)
   const [chat, setChat] = useState<ChatConversation | null>(null)
   useEffect(() => {
-    const chat = query.data?.find((d) => d.conversationId === chatId)
-    !chat.botId && (chat.botId = botId)
-    setChat({ ...chat })
-  }, [query, botId, chatId])
+    const chat = conversations?.query.data?.find((d) => d.conversationId === chatId)
+    if (chat) {
+      !chat.botId && (chat.botId = botId)
+      setChat({ ...chat })
+    }
+  }, [conversations?.query, botId, chatId])
   console.log(JSON.stringify(chat), chatId)
 
   return (

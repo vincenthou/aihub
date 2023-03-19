@@ -4,9 +4,9 @@ import {
   RootRoute,
   Route,
   useParams,
-  useSearch,
-  useRouter
+  useSearch
 } from '@tanstack/react-router'
+import { z } from 'zod'
 import { BotId } from '~/types'
 import Layout from './components/Layout'
 import MultiBotChatPanel from './pages/MultiBotChatPanel'
@@ -41,6 +41,9 @@ function ChatRoute() {
 const chatRoute = new Route({
   getParentRoute: () => layoutRoute,
   path: 'chat/$botId',
+  validateSearch: z.object({
+    chatId: z.string().optional(),
+  }),
   component: ChatRoute,
 })
 

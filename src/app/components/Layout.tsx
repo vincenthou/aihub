@@ -1,8 +1,9 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
-import { Outlet, useMatchRoute, useSearch } from '@tanstack/react-router'
+import { Outlet, useSearch } from '@tanstack/react-router'
 import Sidebar from './Sidebar'
 import { ConversationsContext } from '~app/context'
+import { router } from '~app/router'
 import {
   loadLocalConversations,
   addLocalConversation,
@@ -11,7 +12,7 @@ import {
 import { ChatConversation } from '~types'
 
 function Layout() {
-  const route = useMatchRoute()
+  const route = router.getRoute('/layout/chat/$botId')
   const { chatId } = useSearch({ from: route.id })
   
   const query = useSWR('local-conversations', () => loadLocalConversations(), { suspense: true })
