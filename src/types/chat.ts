@@ -11,3 +11,15 @@ export interface ChatMessageModel {
 export interface ConversationModel {
   messages: ChatMessageModel[]
 }
+
+export interface ChatConversation {
+  botId: BotId
+  name?: string
+  conversationId: string
+  messages: ChatMessageModel[]
+  resetConversation: () => any
+  getConversationContext: () => any
+  sendMessage: (input: string) => void
+  generating: boolean
+  stopGenerating: () => void
+}

@@ -20,7 +20,11 @@ export class ChatGPTBot extends AbstractBot {
     return this.#bot.doSendMessage(params)
   }
 
-  resetConversation(): void {
+  resetConversation(): any {
     return this.#bot.resetConversation()
+  }
+
+  getConversationContext(): any {
+    return this.#bot.getConversationContext()
   }
 }

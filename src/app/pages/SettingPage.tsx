@@ -69,21 +69,21 @@ function SettingPage() {
   }
 
   return (
-    <PagePanel title="Settings">
+    <PagePanel title="全局设置">
       <div className="flex flex-col gap-8 mt-3 pr-3">
         <div className="flex flex-row justify-between items-center">
           <div>
-            <p className="font-bold mb-2 text-xl">Shortcut to open this app</p>
+            <p className="font-bold mb-2 text-xl">打开应用的快捷键</p>
             <div className="flex flex-row gap-1">
               {shortcuts.length ? shortcuts.map((s) => <KDB key={s} text={s} />) : 'Not set'}
             </div>
           </div>
           <div>
-            <Button text="Change shortcut" size="normal" onClick={openShortcutPage} />
+            <Button text="调整快捷键" size="normal" onClick={openShortcutPage} />
           </div>
         </div>
         <div>
-          <p className="font-bold mb-2 text-xl">Startup page</p>
+          <p className="font-bold mb-2 text-xl">应用默认打开AI</p>
           <div className="w-[200px]">
             <Select
               options={Object.entries(CHATBOTS).map(([key, value]) => ({
@@ -96,25 +96,27 @@ function SettingPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-xl">ChatGPT API</p>
-          <div className="flex flex-col gap-1">
-            <p className="font-medium text-base">API Key</p>
-            <Input
-              className="w-[300px]"
-              placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-              value={userConfig.openaiApiKey}
-              onChange={(e) => updateConfigValue({ openaiApiKey: e.currentTarget.value })}
-              type="password"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="font-medium text-base">API Host</p>
-            <Input
-              className="w-[300px]"
-              placeholder="https://api.openai.com"
-              value={userConfig.openaiApiHost}
-              onChange={(e) => updateConfigValue({ openaiApiHost: e.currentTarget.value })}
-            />
+          <p className="font-bold text-xl">ChatGPT配置</p>
+          <div className="flex flex-row gap-8">
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base">API Key</p>
+              <Input
+                className="w-[300px]"
+                placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                value={userConfig.openaiApiKey}
+                onChange={(e) => updateConfigValue({ openaiApiKey: e.currentTarget.value })}
+                type="password"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base">API 域名</p>
+              <Input
+                className="w-[300px]"
+                placeholder="https://api.openai.com"
+                value={userConfig.openaiApiHost}
+                onChange={(e) => updateConfigValue({ openaiApiHost: e.currentTarget.value })}
+              />
+            </div>
           </div>
           {tokenUsed > 0 && (
             <p className="text-sm">
@@ -123,22 +125,22 @@ function SettingPage() {
           )}
         </div>
         <div className="flex flex-col gap-1">
-          <p className="font-bold text-xl">Bing</p>
+          <p className="font-bold text-xl">Bing配置</p>
           <div className="flex flex-row gap-3 items-center">
-            <p className="font-medium text-base">Conversation style</p>
+            <p className="font-medium text-base">对话风格</p>
             <div className="w-[150px]">
               <Select
                 options={[
                   {
-                    name: 'Creative',
+                    name: '创意',
                     value: BingConversationStyle.Creative,
                   },
                   {
-                    name: 'Balanced',
+                    name: '平衡',
                     value: BingConversationStyle.Balanced,
                   },
                   {
-                    name: 'Precise',
+                    name: '精准',
                     value: BingConversationStyle.Precise,
                   },
                 ]}
@@ -150,6 +152,7 @@ function SettingPage() {
         </div>
       </div>
       <Button color={dirty ? 'primary' : 'flat'} text="保存" className="w-fit mt-10 mb-5" onClick={save} />
+      <Button color="flat" text="返回聊天界面" className="w-fit mt-10 ml-5 mb-5" onClick={() => history.back()} />
       <Toaster position="top-right" />
     </PagePanel>
   )

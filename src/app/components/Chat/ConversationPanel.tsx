@@ -1,62 +1,85 @@
 import cx from 'classnames'
-import { FC, useCallback, useMemo, useState, useRef } from 'react'
+import { FC, useCallback, useMemo, useState, useRef, useContext } from 'react'
 import { BiMessageAdd } from 'react-icons/bi'
 import { PhotoIcon } from '@heroicons/react/20/solid'
 import { CHATBOTS } from '~app/consts'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import toast, { Toaster } from 'react-hot-toast'
 import Tooltip from '~app/components/Tooltip'
-import { ConversationContext, ConversationContextValue } from '~app/context'
+import {
+  ConversationContext,
+  ConversationContextValue,
+  ConversationsContext
+} from '~app/context'
 import { PaperAirplaneIcon, DocumentArrowDownIcon } from '@heroicons/react/20/solid'
-import { BotId, BotProps, ChatMessageModel } from '~types'
+import { BotId, BotProps, ChatConversation } from '~types'
 import Button from '../Button'
 import ChatMessageInput from './ChatMessageInput'
 import ChatMessageList from './ChatMessageList'
 import BotSwitcher from './BotSwitcher'
+import NewConversationDialog from './NewConversationDialog'
 
 interface Props {
-  botId: BotId
-  messages: ChatMessageModel[]
-  onUserSendMessage: (input: string, botId: BotId) => void
-  resetConversation: () => void
-  generating: boolean
-  stopGenerating: () => void
   mode?: 'full' | 'compact'
+  onUserSendMessage: (input: string, botId: BotId) => void
+  chat: ChatConversation
+  isHistory?: boolean
 }
 
 const buttonClassName = 'flex cursor-pointer absolute items-center text-white/50 dark:text-white'
 
 const ConversationPanel: FC<Props> = (props) => {
-  const mode = props.mode || 'full'
+  const { mode = 'full', onUserSendMessage, chat } = props
+  const {
+    botId,
+    messages,
+    resetConversation,
+    stopGenerating,
+    generating
+  } = chat
   const marginClass = mode === 'compact' ? 'mx-5' : 'mx-10'
-  const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[props.botId])
-  const messageText = props.messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
+  const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[botId])
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const messageText = messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
   const messagesRef = useRef(null);
-  console.log(messageText)
+  const { create } = useContext(ConversationsContext)
 
   const context: ConversationContextValue = useMemo(() => {
     return {
-      reset: props.resetConversation,
+      reset: resetConversation,
     }
-  }, [props.resetConversation])
+  }, [resetConversation])
 
   const onSubmit = useCallback(
     async (input: string) => {
-      props.onUserSendMessage(input as string, botInfo.id)
+      onUserSendMessage(input as string, botInfo.id)
     },
-    [props],
+    [onUserSendMessage, botInfo.id],
   )
 
-  const resetConversation = useCallback(() => {
-    if (!props.generating) {
-      props.resetConversation()
-    }
-  }, [props])
+  const resetConversationCallback = useCallback(() => {
+    !generating && resetConversation()
+  }, [generating, resetConversation])
 
+  const setConversationName = useCallback((name: string) => {
+    // 也可以在这里通过 chat.getConversationContext 传更完整会话上下文
+    chat.name = name
+    create(chat)
+    resetConversationCallback()
+    setIsDialogOpen(false)
+  }, [chat, create, resetConversationCallback])
+
+  const onCreateNewConversation = () => {
+    if (props.isHistory) {
+      location.href = `/app.html#/chat/${botId}`
+    } else {
+      setIsDialogOpen(true)
+    }
+  }
   const onExport = () => messagesRef.current?.export()
   const onCopySuccess = () => toast.success('复制Markdown成功')
 
-  const hasAction = mode === 'full' && !!props.messages.length
+  const hasAction = mode === 'full' && !!messages?.length
 
   return (
     <ConversationContext.Provider value={context}>
@@ -72,10 +95,10 @@ const ConversationPanel: FC<Props> = (props) => {
               className={cx(
                 buttonClassName,
                 'left-0',
-                props.generating ? 'cursor-not-allowed' : 'cursor-pointer absolute'
+                generating ? 'cursor-not-allowed' : 'cursor-pointer absolute'
               )}
               title="Start new conversation"
-              onClick={resetConversation}
+              onClick={onCreateNewConversation}
             >
               <BiMessageAdd size={16} />
               <span className='text-sm ml-1'>开始新对话</span>
@@ -108,7 +131,7 @@ const ConversationPanel: FC<Props> = (props) => {
         <ChatMessageList
           ref={messagesRef}
           botId={botInfo.id}
-          messages={props.messages}
+          messages={messages}
           className={marginClass}
         />
         {
@@ -118,21 +141,22 @@ const ConversationPanel: FC<Props> = (props) => {
                 // mode={mode}
                 mode="full"
                 className="rounded-full bg-white px-[20px] py-[10px]"
-                disabled={props.generating}
-                placeholder="Ask me anything..."
+                disabled={generating}
+                readOnly={botId === BotId.BING && props.isHistory}
+                placeholder="随便问我点啥..."
                 onSubmit={onSubmit}
                 autoFocus={mode === "full"}
                 actionButton={
-                  props.generating ? (
+                  generating ? (
                     <Button
                       text="Stop"
                       color="flat"
                       size={mode === "full" ? "normal" : "small"}
-                      onClick={props.stopGenerating}
+                      onClick={stopGenerating}
                     />
                   ) : (
                     mode === "full" && (
-                      <Button color="primary" type="submit">
+                      <Button color="primary" isRound type="submit">
                         <PaperAirplaneIcon
                           className="h-5 w-5 text-white"
                           aria-hidden="true"
@@ -147,6 +171,11 @@ const ConversationPanel: FC<Props> = (props) => {
         }
         <Toaster position="top-right" />
       </div>
+      <NewConversationDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        setName={setConversationName}
+      />
     </ConversationContext.Provider>
   )
 }

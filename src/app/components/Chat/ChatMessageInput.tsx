@@ -1,7 +1,8 @@
 import cx from 'classnames'
 import { FC, memo, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { GoBook } from 'react-icons/go'
+import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
 import Button from '../Button'
+import Tooltip from '~app/components/Tooltip'
 import PromptLibraryDialog from '../PromptLibrary/Dialog'
 import TextInput from './TextInput'
 
@@ -10,6 +11,7 @@ interface Props {
   onSubmit: (value: string) => void
   className?: string
   disabled?: boolean
+  readOnly?: boolean
   placeholder?: string
   actionButton?: ReactNode | null
   autoFocus?: boolean
@@ -54,12 +56,13 @@ const ChatMessageInput: FC<Props> = (props) => {
     <form className={cx('flex flex-row items-center gap-3', props.className)} onSubmit={onFormSubmit} ref={formRef}>
       {props.mode === 'full' && (
         <>
-          <GoBook
-            size={22}
-            color="#707070"
-            className="cursor-pointer"
-            onClick={() => setIsPromptLibraryDialogOpen(true)}
-          />
+          <Tooltip content="不会提问？点我看看">
+            <QuestionMarkCircleIcon
+              className="cursor-pointer h-5 w-5 text-gray-600 hover:text-gray-700"
+              aria-hidden="true"
+              onClick={() => setIsPromptLibraryDialogOpen(true)}
+            />
+          </Tooltip>
           <PromptLibraryDialog
             isOpen={isPromptLibraryDialogOpen}
             onClose={() => setIsPromptLibraryDialogOpen(false)}
@@ -72,6 +75,7 @@ const ChatMessageInput: FC<Props> = (props) => {
         formref={formRef}
         name="input"
         disabled={props.disabled}
+        readOnly={props.readOnly}
         placeholder={props.placeholder}
         value={value}
         onValueChange={setValue}

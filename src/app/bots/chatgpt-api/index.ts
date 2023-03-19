@@ -6,6 +6,7 @@ import { CHATGPT_SYSTEM_MESSAGE, ChatMessage } from './consts'
 import { updateTokenUsage } from './usage'
 
 interface ConversationContext {
+  conversationId?: string,
   messages: ChatMessage[]
 }
 
@@ -70,7 +71,13 @@ export class ChatGPTApiBot extends AbstractBot {
     })
   }
 
-  resetConversation() {
+  resetConversation(): any {
+    const originContext = this.conversationContext
     this.conversationContext = undefined
+    return originContext
+  }
+
+  getConversationContext(): any {
+    return this.conversationContext
   }
 }

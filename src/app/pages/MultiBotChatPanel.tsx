@@ -3,21 +3,13 @@ import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import Button from '~app/components/Button'
 import ChatMessageInput from '~app/components/Chat/ChatMessageInput'
 import { useChat } from '~app/hooks/use-chat'
-import { BotId, ChatMessageModel } from '~types'
+import { BotId, ChatConversation } from '~types'
 import ConversationPanel from '../components/Chat/ConversationPanel'
 
-interface Chat {
-  botId: BotId
-  messages: ChatMessageModel[]
-  sendMessage: (input: string) => void
-  resetConversation: () => void
-  generating: boolean
-  stopGenerating: () => void
-}
-
 const MultiBotChatPanel: FC = () => {
-  const [chats, setChats] = useState<Chat[]>([useChat(BotId.CHATGPT), useChat(BotId.BING)])
-  const [leftChat, rightChat] = chats
+  const [conversations, setConversations] = useState<ChatConversation[]>([useChat(BotId.CHATGPT), useChat(BotId.BING)])
+  // TODO: setConversations 改一起显示的聊天框bot
+  const [leftChat, rightChat] = conversations
 
   const generating = useMemo(
     () => leftChat.generating || rightChat.generating,
@@ -36,16 +28,19 @@ const MultiBotChatPanel: FC = () => {
   return (
     <div className="grid grid-cols-2 grid-rows-[1fr_auto] overflow-hidden gap-5">
       {
-        chats.map(chat => (
+        conversations.map(conversation => (
           <ConversationPanel
-            key={chat.botId}
-            botId={chat.botId}
-            messages={chat.messages}
-            onUserSendMessage={onUserSendMessage}
-            generating={chat.generating}
-            stopGenerating={chat.stopGenerating}
+            key={conversation.botId}
+            chat={conversation}
             mode="compact"
-            resetConversation={chat.resetConversation}
+            onUserSendMessage={onUserSendMessage}
+            // botId={conversation.botId}
+            // messages={conversation.messages}
+            // onUserSendMessage={onUserSendMessage}
+            // generating={conversation.generating}
+            // stopGenerating={conversation.stopGenerating}
+            // mode="compact"
+            // resetConversation={conversation.resetConversation}
           />
         ))
       }
@@ -54,11 +49,11 @@ const MultiBotChatPanel: FC = () => {
         mode="full"
         className="rounded-full bg-white px-[20px] py-[10px]"
         disabled={generating}
-        placeholder="Send to all ..."
+        placeholder="一起发送 ..."
         onSubmit={onUserSendMessage}
         actionButton={
           !generating && (
-            <Button color="primary" type="submit">
+            <Button color="primary" isRound type="submit">
               <PaperAirplaneIcon
                 className="h-5 w-5 text-white"
                 aria-hidden="true"

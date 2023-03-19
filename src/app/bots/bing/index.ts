@@ -92,7 +92,7 @@ export class BingWebBot extends AbstractBot {
             params.onEvent({
               type: 'ERROR',
               error: new ChatError(
-                'Sorry, you have reached chat turns limit in this conversation.',
+                '抱歉，你已经达到了单次对话的最大次数，请开始一段新对话',
                 ErrorCode.CONVERSATION_LIMIT,
               ),
             })
@@ -114,7 +114,13 @@ export class BingWebBot extends AbstractBot {
     wsp.sendPacked({ protocol: 'json', version: 1 })
   }
 
-  resetConversation() {
+  resetConversation(): any {
+    const originContext = this.conversationContext
     this.conversationContext = undefined
+    return originContext
+  }
+
+  getConversationContext(): any {
+    return this.conversationContext
   }
 }

@@ -1,10 +1,13 @@
+import { FC, useContext } from 'react'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
+import { ConversationsContext } from '~app/context'
 import feedbackIcon from '~/assets/icons/feedback.svg'
 import settingIcon from '~/assets/icons/setting.svg'
 import logo from '~/assets/logo.svg'
 import logoDark from '~/assets/logo-dark.svg'
-import NavLink from '~app/components/Sidebar/NavLink'
+import ConversationHistoryItem from './ConversationHistoryItem'
+import { ChatConversation } from '~types'
 
 function IconButton(props: { icon: string; active?: boolean }) {
   return (
@@ -19,16 +22,18 @@ function IconButton(props: { icon: string; active?: boolean }) {
   )
 }
 
-function Sidebar() {
+const Sidebar: FC<{ chatId: string }> = (props) => {
+  const { query, remove } = useContext(ConversationsContext)
+
   return (
     <aside className="flex flex-col px-2">
-      <div className="flex justify-between mt-3">
-        <NavLink isAll>
-          <img src={logo} className="w-10 block dark:hidden" />
-          <img src={logoDark} className="w-10 hidden dark:block" />
-        </NavLink>
+      <div className="flex justify-between py-2 border-b border-white/20">
+        <Link to="/">
+          <img src={logo} className="h-8 block dark:hidden" />
+          <img src={logoDark} className="h-8 hidden dark:block" />
+        </Link>
         <div className="flex flex-row mt-1 ml-3 gap-[10px]">
-          <a href="https://github.com/wong2/chathub/issues" target="_blank" rel="noreferrer" title="Feedback">
+          <a href="https://space.bilibili.com/1532854091" target="_blank" rel="noreferrer" title="给我反馈">
             <IconButton icon={feedbackIcon} />
           </a>
           <Link to="/setting">
@@ -36,8 +41,21 @@ function Sidebar() {
           </Link>
         </div>
       </div>
-      <div className="mt-auto">
-        <hr className="border-[#ffffff4d]" />
+      <div className="flex-1 py-3">
+      {
+        query.data.length ? query.data.map(
+          (conversation: ChatConversation) => (
+            <ConversationHistoryItem
+              key={conversation.conversationId}
+              id={conversation.conversationId}
+              chatId={props.chatId}
+              botId={conversation.botId}
+              name={conversation?.name}
+              remove={remove}
+            />
+          )
+        ) : <p className="mt-5 flex justify-center text-dark text-sm dark:text-white/50">暂无历史对话</p>
+      }
       </div>
     </aside>
   )

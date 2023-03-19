@@ -55,6 +55,8 @@ export function useChat(botId: BotId, page = 'singleton') {
             setChatState((draft) => {
               draft.abortController = undefined
               draft.generatingMessageId = ''
+              const context = chatState.bot.getConversationContext()
+              draft.conversationId = context.conversationId
             })
           }
         },
@@ -71,6 +73,10 @@ export function useChat(botId: BotId, page = 'singleton') {
       draft.messages = []
     })
   }, [chatState.bot, setChatState])
+
+  const getConversationContext = useCallback(() => {
+    return chatState.bot.getConversationContext()
+  }, [chatState.bot])
 
   const stopGenerating = useCallback(() => {
     chatState.abortController?.abort()
@@ -89,8 +95,10 @@ export function useChat(botId: BotId, page = 'singleton') {
   return {
     botId,
     messages: chatState.messages,
+    conversationId: chatState.conversationId,
     sendMessage,
     resetConversation,
+    getConversationContext,
     generating: !!chatState.generatingMessageId,
     stopGenerating,
   }

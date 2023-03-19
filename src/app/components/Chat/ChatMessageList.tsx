@@ -2,6 +2,7 @@ import { forwardRef, useRef, useImperativeHandle } from 'react'
 import cx from 'classnames'
 import html2canvas from "html2canvas"
 import ScrollToBottom from 'react-scroll-to-bottom'
+import toast, { Toaster } from 'react-hot-toast'
 import { BotId, ChatMessageModel } from '~types'
 import ChatMessageCard from './ChatMessageCard'
 
@@ -11,7 +12,11 @@ interface Props {
   className?: string
 }
 
-const exportAsImage = (element: HTMLElement, filename: string) => {
+const exportAsImage = (element: HTMLElement | null, filename: string) => {
+  if (!element) {
+    toast.error('导出失败')
+    return
+  }
   // 调用html2canvas函数
   html2canvas(element, { 
     scrollX: 0,
@@ -44,18 +49,21 @@ const ChatMessageList = forwardRef<ExportChatHandle, Props>((props, ref) => {
   }))
 
   return (
-    <ScrollToBottom className="overflow-auto h-full">
-      <div ref={messagesRef} className={cx('flex flex-col gap-3 h-full', props.className)}>
-        {props.messages.map((message, index) => (
-          <ChatMessageCard 
-            key={message.id}
-            botId={props.botId}
-            message={message}
-            className={index === 0 ? 'mt-5' : undefined}
-          />
-        ))}
-      </div>
-    </ScrollToBottom>
+    <>
+      <ScrollToBottom className="overflow-auto h-full">
+        <div ref={messagesRef} className={cx('flex flex-col gap-3 h-full', props.className)}>
+          {props.messages?.map((message, index) => (
+            <ChatMessageCard 
+              key={message.id}
+              botId={props.botId}
+              message={message}
+              className={index === 0 ? 'mt-5' : undefined}
+            />
+          ))}
+        </div>
+      </ScrollToBottom>
+      <Toaster position="top-right" />
+    </>
   )
 })
 

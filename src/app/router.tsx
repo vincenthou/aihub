@@ -1,9 +1,17 @@
-import { createHashHistory, ReactRouter, RootRoute, Route, useParams } from '@tanstack/react-router'
+import {
+  createHashHistory,
+  ReactRouter,
+  RootRoute,
+  Route,
+  useParams,
+  useSearch,
+  useRouter
+} from '@tanstack/react-router'
 import { BotId } from '~/types'
 import Layout from './components/Layout'
 import MultiBotChatPanel from './pages/MultiBotChatPanel'
 import SettingPage from './pages/SettingPage'
-import SingleBotChatPanel from './pages/SingleBotChatPanel'
+import { SingleBotChatPanel, HistorySingleBotChatPanel } from './pages/SingleBotChatPanel'
 
 const rootRoute = new RootRoute()
 
@@ -21,7 +29,13 @@ const indexRoute = new Route({
 
 function ChatRoute() {
   const { botId } = useParams({ from: chatRoute.id })
-  return <SingleBotChatPanel botId={botId as BotId} />
+  const { chatId } = useSearch({ from: chatRoute.id })
+
+  if (chatId) {
+    return <HistorySingleBotChatPanel botId={botId as BotId} chatId={chatId} />
+  } else {
+    return <SingleBotChatPanel botId={botId as BotId} />
+  }
 }
 
 const chatRoute = new Route({

@@ -9,6 +9,7 @@ export const chatFamily = atomFamily(
   (param: Param) => {
     return atomWithImmer({
       botId: param.botId,
+      conversationId: '',
       bot: createBot(param.botId),
       messages: [] as ChatMessageModel[],
       generatingMessageId: '',
