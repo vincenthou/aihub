@@ -26,7 +26,7 @@ const MultiBotChatPanel: FC = () => {
   )
 
   return (
-    <div className="grid grid-cols-2 grid-rows-[1fr_auto] overflow-hidden gap-5">
+    <div className="grid grid-cols-2 grid-rows-[1fr_auto] overflow-hidden gap-5 flex-1">
       {
         conversations.map(conversation => (
           <ConversationPanel
