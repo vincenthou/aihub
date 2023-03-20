@@ -36,7 +36,7 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
           本项目基于开源项目搭建，可以免费使用
         </p>
         <div className="flex flex-row mt-1 ml-3 gap-[10px]">
-          <a href="https://space.bilibili.com/1532854091" target="_blank" rel="noreferrer" title="给我反馈">
+          <a href="https://www.bilibili.com/video/BV1NM411p7CN/" target="_blank" rel="noreferrer" title="给我反馈">
             <IconButton icon={feedbackIcon} />
           </a>
           <Link to="/setting">

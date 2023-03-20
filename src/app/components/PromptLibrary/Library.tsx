@@ -60,11 +60,11 @@ function CreatePromptForm(props: { onSubmit: (title: string, prompt: string) => 
   return (
     <form className="flex flex-col gap-2 w-1/2" onSubmit={onSubmit}>
       <div className="w-full">
-        <span className="text-sm font-semibold block mb-1">Prompt Title</span>
+        <span className="text-sm font-semibold block mb-1">标题</span>
         <Input className="w-full" name="title" />
       </div>
       <div className="w-full">
-        <span className="text-sm font-semibold block mb-1">Prompt Content</span>
+        <span className="text-sm font-semibold block mb-1">内容</span>
         <Textarea className="w-full" name="prompt" />
       </div>
       <Button color="primary" text="Create" className="w-fit" size="small" type="submit" />
