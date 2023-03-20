@@ -28,7 +28,7 @@ const TextInput = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
     <TextareaAutosize
       ref={ref}
       className={cx(
-        'resize-none overflow-scroll w-full outline-none text-sm text-[#303030] bg-white',
+        'resize-none w-full outline-none text-sm text-[#303030] bg-white',
         disabled && 'cursor-wait',
         className,
       )}
@@ -37,7 +37,7 @@ const TextInput = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
       onChange={(event) => onValueChange(event.target.value)}
       autoComplete="off"
       minRows={minRows}
-      maxRows={5}
+      maxRows={6}
       {...textareaProps}
     />
   )

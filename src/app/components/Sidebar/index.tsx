@@ -13,7 +13,7 @@ function IconButton(props: { icon: string; active?: boolean }) {
   return (
     <div
       className={cx(
-        'p-[6px] rounded-[10px] cursor-pointer hover:opacity-80',
+        'p-[3px] rounded-[4px] cursor-pointer hover:opacity-80',
         props.active ? 'bg-[#5E95FC]' : 'bg-[#F2F2F2] bg-opacity-20',
       )}
     >

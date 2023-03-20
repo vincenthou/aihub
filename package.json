@@ -1,7 +1,7 @@
 {
   "name": "aihub-extension",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -62,6 +62,7 @@
     "jotai-immer": "^0.2.0",
     "lodash-es": "^4.17.21",
     "ofetch": "^1.0.1",
+    "re-resizable": "^6.9.9",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",

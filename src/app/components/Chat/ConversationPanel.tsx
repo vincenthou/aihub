@@ -149,7 +149,7 @@ const ConversationPanel: FC<Props> = (props) => {
                 actionButton={
                   generating ? (
                     <Button
-                      text="Stop"
+                      text="停"
                       color="flat"
                       size={mode === "full" ? "normal" : "small"}
                       onClick={stopGenerating}

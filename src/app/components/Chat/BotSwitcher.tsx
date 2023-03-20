@@ -3,7 +3,7 @@ import { FC, Fragment } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { CHATBOTS } from '~/app/consts'
 import { BotId, BotProps } from '~types'
-import NavLink from '../Sidebar/NavLink'
+import NavLink from '../NavLink'
 
 interface Props {
   mode: string
@@ -39,11 +39,14 @@ const BotSwitcher: FC<Props> = (props) => {
           <Menu.Items className="bg-white dark:bg-gray-600 absolute right-0 mt-2 w-40 origin-top-right rounded-md shadow-lg focus:outline-none">
             {Object.entries(CHATBOTS).map(([key, value]) => (
               <Menu.Item key={key}>
-                {
+                {({ close }) => (
                   mode === "compact" ? (
                     <div
                       className={`${compactItemClassName} ${botId === key ? 'bg-white/70 dark:bg-gray-500' : ''}`}
-                      onClick={() => onChange(value)}
+                      onClick={() => {
+                        onChange(value)
+                        close()
+                      }}
                     >
                       {value.avatar ? (
                         <img
@@ -53,8 +56,11 @@ const BotSwitcher: FC<Props> = (props) => {
                       ) : null}
                       <span className="dark:text-white">{value.name}</span>
                     </div>
-                  ) : <NavLink bot={value} />
-                }
+                  ) : <NavLink bot={value} onClick={() => {
+                    onChange(value)
+                    close()
+                  }} />
+                )}
               </Menu.Item>
             ))}
           </Menu.Items>

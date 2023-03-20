@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { useCallback } from 'react'
+import { Resizable } from 're-resizable'
 import { Outlet } from '@tanstack/react-router'
 import Sidebar from './Sidebar'
 import { ConversationsContext } from '~app/context'
@@ -28,12 +29,27 @@ function Layout() {
     },
     [query]
   )
-
+  
   return (
     <div className="dark h-screen">
-      <main className="bg-white dark:bg-gray-800 grid grid-cols-[20%_1fr] backdrop-blur-2xl h-full">
+      <main className="bg-white dark:bg-gray-800 flex backdrop-blur-2xl h-full">
         <ConversationsContext.Provider value={{ query, create, remove }}>
-          <Sidebar chatId={chatId} />
+          <Resizable
+            defaultSize={{ height: '100%', width: 256 }}
+            minWidth={256}
+            enable={{ 
+              top:false,
+              right:true,
+              bottom:false,
+              left:false,
+              topRight:false,
+              bottomRight:false,
+              bottomLeft:false,
+              topLeft:false
+            }}
+          >
+            <Sidebar chatId={chatId} />
+          </Resizable>
           <Outlet />
         </ConversationsContext.Provider>
       </main>

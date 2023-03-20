@@ -4,12 +4,12 @@ import { BotId, ChatConversation } from '~types'
 import { ConversationsContext } from '~app/context'
 import { CHATBOTS } from '~app/consts'
 import ConversationPanel from '../components/Chat/ConversationPanel'
-import NavLink from '../components/Sidebar/NavLink'
+import NavLink from '../components/NavLink'
 
 export const SingleBotChatPanel: FC<{ botId: BotId }> = (props) => {
   const chat = useChat(props.botId)
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden flex-1">
       <ConversationPanel chat={chat} onUserSendMessage={chat.sendMessage} />
     </div>
   )
@@ -29,7 +29,7 @@ export const HistorySingleBotChatPanel: FC<{ botId: BotId, chatId: string }> = (
   console.log(JSON.stringify(chat), chatId)
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden flex-1">
       {
         chat ? (
           <ConversationPanel isHistory chat={chat} onUserSendMessage={chat.sendMessage} />

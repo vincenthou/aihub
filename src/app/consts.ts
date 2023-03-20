@@ -1,4 +1,5 @@
 import chatgptLogo from '~/assets/chatgpt-logo.svg'
+import gpt4Logo from '~/assets/gpt4-logo.svg'
 import bingLogo from '~/assets/bing-logo.svg'
 import { BotId, BotProps } from '~types'
 
@@ -16,7 +17,7 @@ export const CHATBOTS: Record<BotId, BotProps> = {
   [BotId.GPT4]: {
     id: BotId.GPT4,
     name: 'GPT-4',
-    avatar: chatgptLogo,
+    avatar: gpt4Logo,
   },
 }
 
