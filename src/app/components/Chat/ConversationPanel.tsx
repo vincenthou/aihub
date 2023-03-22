@@ -142,8 +142,8 @@ const ConversationPanel: FC<Props> = (props) => {
                 mode="full"
                 className="rounded-full bg-white px-[20px] py-[10px]"
                 disabled={generating}
-                readOnly={botId === BotId.BING && props.isHistory}
-                placeholder="随便问我点啥..."
+                readOnly={!onUserSendMessage}
+                placeholder={!onUserSendMessage ? '抱歉，除了chatGPT其他机器人暂不支持基于历史记录继续对话' : '随便问我点啥...'}
                 onSubmit={onSubmit}
                 autoFocus={mode === "full"}
                 actionButton={
@@ -155,14 +155,14 @@ const ConversationPanel: FC<Props> = (props) => {
                       onClick={stopGenerating}
                     />
                   ) : (
-                    mode === "full" && (
+                    mode === "full" && !!onUserSendMessage ? (
                       <Button color="primary" isRound type="submit">
                         <PaperAirplaneIcon
                           className="h-5 w-5 text-white"
                           aria-hidden="true"
                         />
                       </Button>
-                    )
+                    ) : null
                   )
                 }
               />

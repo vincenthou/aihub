@@ -28,10 +28,10 @@ const ChatGPTAuthErrorAction = () => {
   }
   return (
     <div className="flex flex-row gap-2 items-center">
-      <Button color="primary" text="Login & verify" onClick={fixChatGPT} isLoading={fixing} size="small" />
-      <span className="text-sm">OR</span>
+      <Button color="primary" text="验证你的openAI账号是否登录" onClick={fixChatGPT} isLoading={fixing} size="small" />
+      <span className="text-sm">或者</span>
       <Link to="/setting">
-        <Button color="primary" text="Set api key" size="small" />
+        <Button color="primary" text="设置你ChatGPT配置的API Key" size="small" />
       </Link>
     </div>
   )

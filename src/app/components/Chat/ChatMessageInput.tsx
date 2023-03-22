@@ -1,7 +1,6 @@
 import cx from 'classnames'
 import { FC, memo, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
-import { Resizable } from 're-resizable'
 import Button from '../Button'
 import Tooltip from '~app/components/Tooltip'
 import PromptLibraryDialog from '../PromptLibrary/Dialog'

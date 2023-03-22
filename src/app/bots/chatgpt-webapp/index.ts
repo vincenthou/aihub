@@ -94,7 +94,7 @@ export class ChatGPTWebBot extends AbstractBot {
   resetConversation(): any {
     const originContext = this.conversationContext
     this.conversationContext = undefined
-    return this.conversationContext
+    return originContext
   }
 
   getConversationContext(): any {

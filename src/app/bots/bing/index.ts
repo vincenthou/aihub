@@ -92,7 +92,7 @@ export class BingWebBot extends AbstractBot {
             params.onEvent({
               type: 'ERROR',
               error: new ChatError(
-                '抱歉，你已经达到了单次对话的最大次数，请开始一段新对话',
+                '抱歉，你已经达到了单次对话的最大次数，请点击左上方按钮开始一段新对话',
                 ErrorCode.CONVERSATION_LIMIT,
               ),
             })

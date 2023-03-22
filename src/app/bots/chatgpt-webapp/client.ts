@@ -26,7 +26,7 @@ class ChatGPTClient {
   async getAccessToken(): Promise<string> {
     const resp = await this.fetch('https://chat.openai.com/api/auth/session')
     if (resp.status === 403) {
-      throw new ChatError('Please pass Cloudflare check', ErrorCode.CHATGPT_CLOUDFLARE)
+      throw new ChatError('请在openAI的界面先通过Cloudflare真人使用检测', ErrorCode.CHATGPT_CLOUDFLARE)
     }
     const data = await resp.json().catch(() => ({}))
     if (!data.accessToken) {

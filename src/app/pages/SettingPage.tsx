@@ -75,7 +75,7 @@ function SettingPage() {
           <div>
             <p className="font-bold mb-2 text-xl">打开应用的快捷键</p>
             <div className="flex flex-row gap-1">
-              {shortcuts.length ? shortcuts.map((s) => <KDB key={s} text={s} />) : 'Not set'}
+              {shortcuts.length ? shortcuts.map((s) => <KDB key={s} text={s} />) : '暂未设置'}
             </div>
           </div>
           <div>
@@ -99,7 +99,10 @@ function SettingPage() {
           <p className="font-bold text-xl">ChatGPT配置</p>
           <div className="flex flex-row gap-8">
             <div className="flex flex-col gap-1">
-              <p className="font-medium text-base">API Key</p>
+              <p className="font-medium text-base">
+                API Key
+                👉<a href='https://platform.openai.com/account/api-keys' target="_blank" rel="noreferrer">这里生成</a>
+              </p>
               <Input
                 className="w-[300px]"
                 placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -120,7 +123,7 @@ function SettingPage() {
           </div>
           {tokenUsed > 0 && (
             <p className="text-sm">
-              Usage: {formatDecimal(tokenUsed)} tokens (~{formatAmount((tokenUsed / 1000) * 0.002)})
+              已使用: {formatDecimal(tokenUsed)} tokens (大概花费~{formatAmount((tokenUsed / 1000) * 0.002)})
             </p>
           )}
         </div>

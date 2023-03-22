@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import { getUserConfig } from '~services/user-config'
 import { ChatError, ErrorCode } from '~utils/errors'
 import { parseSSEResponse } from '~utils/sse'
@@ -16,11 +17,12 @@ export class ChatGPTApiBot extends AbstractBot {
   async doSendMessage(params: SendMessageParams) {
     const { openaiApiKey, openaiApiHost } = await getUserConfig()
     if (!openaiApiKey) {
-      throw new ChatError('OpenAI API key not set', ErrorCode.API_KEY_NOT_SET)
+      throw new ChatError('OpenAI API key 暂未配置，请点击左上方配置按钮配置', ErrorCode.API_KEY_NOT_SET)
     }
     if (!this.conversationContext) {
       this.conversationContext = {
         messages: [{ role: 'system', content: CHATGPT_SYSTEM_MESSAGE }],
+        conversationId: uuidv4(),
       }
     }
     this.conversationContext.messages.push({ role: 'user', content: params.prompt })
