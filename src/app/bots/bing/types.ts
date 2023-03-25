@@ -68,6 +68,7 @@ export interface Body {
   text: string
   wrap: boolean
   size?: string
+  inlines?: { text: string }[]
 }
 
 export interface Feedback {

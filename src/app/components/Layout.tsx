@@ -7,7 +7,9 @@ import { ConversationsContext } from '~app/context'
 import {
   loadLocalConversations,
   addLocalConversation,
-  removeLocalConversation
+  removeLocalConversation,
+  importAllLocalConversations,
+  removeAllLocalConversations,
 } from '~services/conversations'
 import { ChatConversation } from '~types'
 
@@ -17,6 +19,9 @@ function Layout() {
   const query = useSWR('local-conversations', () => loadLocalConversations(), { suspense: true })
   const create = useCallback(
     async (conversation: ChatConversation) => {
+      if (conversation.generating) {
+        delete conversation.generating
+      }
       await addLocalConversation(conversation)
       query.mutate()
     },
@@ -29,11 +34,25 @@ function Layout() {
     },
     [query]
   )
+  const importAll = useCallback(
+    async (conversations: ChatConversation[]) => {
+      await importAllLocalConversations(conversations)
+      query.mutate()
+    },
+    [query]
+  )
+  const removeAll = useCallback(
+    async () => {
+      await removeAllLocalConversations()
+      query.mutate()
+    },
+    [query]
+  )
   
   return (
     <div className="dark h-screen">
       <main className="bg-white dark:bg-gray-800 flex backdrop-blur-2xl h-full">
-        <ConversationsContext.Provider value={{ query, create, remove }}>
+        <ConversationsContext.Provider value={{ query, create, remove, importAll, removeAll }}>
           <Resizable
             defaultSize={{ height: '100%', width: 256 }}
             minWidth={256}

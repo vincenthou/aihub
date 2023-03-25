@@ -10,6 +10,8 @@ export interface ConversationsContextValue {
   query: SWRResponse<ChatConversation[], any, Required<{ suspense: true }>>
   create: (conversation: ChatConversation) => void
   remove: (id: string) => void
+  removeAll: () => void
+  importAll: (conversations: ChatConversation[]) => void
 }
 
 export const ConversationContext = createContext<ConversationContextValue | null>(null)

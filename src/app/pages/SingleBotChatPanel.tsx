@@ -1,16 +1,30 @@
 import { FC, useContext, useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import { useChat } from '~app/hooks/use-chat'
 import { BotId, ChatConversation } from '~types'
 import { ConversationsContext } from '~app/context'
 import { CHATBOTS } from '~app/consts'
+import Button from '~app/components/Button'
 import ConversationPanel from '../components/Chat/ConversationPanel'
 import NavLink from '../components/NavLink'
 
 export const SingleBotChatPanel: FC<{ botId: BotId }> = (props) => {
-  const chat = useChat(props.botId)
+  const { botId } = props
+  const chat = useChat(botId)
+  let renderExtraInfo: JSX.Element | null = null
+  // 特殊处理bing显示
+  if (botId === BotId.BING) {
+    renderExtraInfo = <Link to="/setting">
+      <Button color="flat" text="设置切换风格" size="small" />
+    </Link>
+  }
   return (
     <div className="overflow-hidden flex-1">
-      <ConversationPanel chat={chat} onUserSendMessage={chat.sendMessage} />
+      <ConversationPanel
+        chat={chat}
+        onUserSendMessage={chat.sendMessage}
+        renderExtraInfo={renderExtraInfo}
+      />
     </div>
   )
 }

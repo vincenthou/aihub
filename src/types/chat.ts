@@ -20,12 +20,12 @@ export interface ConversationModel {
 
 export interface ChatConversation {
   botId: BotId
-  name?: string
   conversationId: string
   messages: ChatMessageModel[]
+  name?: string
+  generating?: boolean
   resetConversation: () => any
   getConversationContext: () => any
   sendMessage: (input: string) => void
-  generating: boolean
   stopGenerating: () => void
 }

@@ -1,5 +1,5 @@
 import Browser from 'webextension-polyfill'
-import { getUserConfig, StartupPage } from '~services/user-config'
+import { getUserConfig } from '~services/user-config'
 
 async function openAppPage() {
   const tabs = await Browser.tabs.query({})
@@ -9,7 +9,8 @@ async function openAppPage() {
     await Browser.tabs.update(tab.id, { active: true })
     return
   }
-  const { startupPage } = await getUserConfig()
+  const { startupPage, bingConversationStyle } = await getUserConfig()
+  console.log('Bing风格：', bingConversationStyle)
   const hash = `#/chat/${startupPage}`
   await Browser.tabs.create({ url: `app.html${hash}` })
 }

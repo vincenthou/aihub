@@ -1,9 +1,15 @@
 import cx from 'classnames'
 import { FC, useCallback, useMemo, useState, useRef, useContext } from 'react'
 import { BiMessageAdd } from 'react-icons/bi'
-import { PhotoIcon } from '@heroicons/react/20/solid'
+import {
+  PhotoIcon,
+  PaperAirplaneIcon,
+  DocumentArrowDownIcon,
+  ClipboardDocumentIcon,
+} from '@heroicons/react/20/solid'
 import { CHATBOTS } from '~app/consts'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import fileDownload from 'js-file-download';
 import toast, { Toaster } from 'react-hot-toast'
 import Tooltip from '~app/components/Tooltip'
 import {
@@ -11,7 +17,6 @@ import {
   ConversationContextValue,
   ConversationsContext
 } from '~app/context'
-import { PaperAirplaneIcon, DocumentArrowDownIcon } from '@heroicons/react/20/solid'
 import { BotId, BotProps, ChatConversation } from '~types'
 import Button from '../Button'
 import ChatMessageInput from './ChatMessageInput'
@@ -24,12 +29,13 @@ interface Props {
   onUserSendMessage: (input: string, botId: BotId) => void
   chat: ChatConversation
   isHistory?: boolean
+  renderExtraInfo?: JSX.Element | null
 }
 
 const buttonClassName = 'flex cursor-pointer absolute items-center text-white/50 dark:text-white'
 
 const ConversationPanel: FC<Props> = (props) => {
-  const { mode = 'full', onUserSendMessage, chat } = props
+  const { mode = 'full', onUserSendMessage, chat, renderExtraInfo } = props
   const {
     botId,
     messages,
@@ -40,7 +46,7 @@ const ConversationPanel: FC<Props> = (props) => {
   const marginClass = mode === 'compact' ? 'mx-5' : 'mx-10'
   const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[botId])
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-  const messageText = messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
+  const messagesText = messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
   const messagesRef = useRef<{ export: () => void }>(null);
   const conversations = useContext(ConversationsContext)
 
@@ -76,8 +82,9 @@ const ConversationPanel: FC<Props> = (props) => {
       setIsDialogOpen(true)
     }
   }
-  const onExport = () => messagesRef.current?.export()
-  const onCopySuccess = () => toast.success('复制Markdown成功')
+  const onExportImage = () => messagesRef.current?.export()
+  const onExportFile = () => fileDownload(messagesText, chat?.name || '当前对话.md')
+  const onCopySuccess = () => toast.success('当前对话以Markdown格式复制成功，你可以粘贴到任意空白文本')
 
   const hasAction = mode === 'full' && !!messages?.length
 
@@ -107,8 +114,27 @@ const ConversationPanel: FC<Props> = (props) => {
           <img src={botInfo.avatar} className="w-5 h-5 object-contain rounded-full" />
           <span className="font-semibold text-white/50 dark:text-white text-sm">{botInfo.name}</span>
           <BotSwitcher mode={mode} botId={botInfo.id} onChange={setBotInfo} />
+          {renderExtraInfo}
           {hasAction && (<>
-            <button className={cx(buttonClassName, 'right-0')} onClick={onExport}>
+            <CopyToClipboard text={messagesText} onCopy={onCopySuccess}>
+              <button className={cx(buttonClassName, 'right-0')}>
+                <Tooltip content="复制对话">
+                  <ClipboardDocumentIcon
+                    className="h-5 w-5 hover:text-violet-100"
+                    aria-hidden="true"
+                  />
+                </Tooltip>
+              </button>
+            </CopyToClipboard>
+            <button className={cx(buttonClassName, 'right-8')} onClick={onExportFile}>
+              <Tooltip content="导出对话">
+                <DocumentArrowDownIcon
+                  className="h-5 w-5 hover:text-violet-100"
+                  aria-hidden="true"
+                />
+              </Tooltip>
+            </button>
+            <button className={cx(buttonClassName, 'right-16')} onClick={onExportImage}>
               <Tooltip content="导出图片">
                 <PhotoIcon
                   className="h-5 w-5 hover:text-violet-100"
@@ -116,16 +142,6 @@ const ConversationPanel: FC<Props> = (props) => {
                 />
               </Tooltip>
             </button>
-            <CopyToClipboard text={messageText} onCopy={onCopySuccess}>
-              <button className={cx(buttonClassName, 'right-8')}>
-                <Tooltip content="复制对话">
-                  <DocumentArrowDownIcon
-                    className="h-5 w-5 hover:text-violet-100"
-                    aria-hidden="true"
-                  />
-                </Tooltip>
-              </button>
-            </CopyToClipboard>
           </>)}
         </div>
         <ChatMessageList

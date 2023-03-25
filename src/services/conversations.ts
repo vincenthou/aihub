@@ -6,6 +6,14 @@ export async function loadLocalConversations() {
   return (value || []) as ChatConversation[]
 }
 
+export async function importAllLocalConversations(conversations: ChatConversation[]) {
+  await Browser.storage.local.set({ conversations })
+}
+
+export async function removeAllLocalConversations() {
+  await Browser.storage.local.set({ conversations: [] })
+}
+
 export async function addLocalConversation(conversation: ChatConversation) {
   const conversations = await loadLocalConversations()
   if (conversations.find(c => c.conversationId === conversation.conversationId)) {

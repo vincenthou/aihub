@@ -103,6 +103,8 @@ export class BingWebBot extends AbstractBot {
           if (event?.arguments[0]?.messages) {
             const message: ChatResponseMessage = event.arguments[0].messages[0]
             const text = convertMessageToMarkdown(message)
+            console.log('收到消息原始内容：', text)
+            console.log('消息对象：', message)
             const data: { text: string, extra?: ExtraMessageInfo } = { text }
             if (message.sourceAttributions) {
               data.extra = {
