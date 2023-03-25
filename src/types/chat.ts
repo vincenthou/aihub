@@ -1,10 +1,16 @@
 import { BotId } from '~types'
 import { ChatError } from '~utils/errors'
 
+export interface ExtraMessageInfo {
+  source?: { name: string, url: string }[]
+  suggests?: { text: string }[]
+}
+
 export interface ChatMessageModel {
   id: string
   author: BotId | 'user'
   text: string
+  extra?: ExtraMessageInfo
   error?: ChatError
 }
 

@@ -41,6 +41,9 @@ export function useChat(botId: BotId, page = 'singleton') {
           if (event.type === 'UPDATE_ANSWER') {
             updateMessage(botMessageId, (message) => {
               message.text = event.data.text
+              if (event.data.extra) {
+                message.extra = event.data.extra
+              }
             })
           } else if (event.type === 'ERROR') {
             console.error('sendMessage error', event.error.code, event.error)

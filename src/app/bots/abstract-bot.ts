@@ -1,10 +1,19 @@
 import { ChatError, ErrorCode } from '~utils/errors'
+import { ExtraMessageInfo } from '~types/chat'
 
 export type Event =
   | {
       type: 'UPDATE_ANSWER'
       data: {
         text: string
+        extra?: ExtraMessageInfo
+      }
+    }
+  | {
+      type: 'UPDATE_THROTTLING'
+      data: {
+        max: number,
+        current: number
       }
     }
   | {

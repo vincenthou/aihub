@@ -52,6 +52,22 @@ const ChatMessageCard: FC<Props> = ({ botId, message, className }) => {
           ) : (
             !message.error && <BeatLoader size={10} className="leading-tight" />
           )}
+          {message.extra ? (
+            <div className="py-2 text-sm flex flex-wrap gap-1">
+              <span className="font-medium">参考来源：</span>
+              {message.extra?.source?.map(item => (
+                <a
+                  className="bg-[#4987FC] p-1 mr-2 rounded text-white"
+                  key={item.url}
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          ) : null}
           {!!message.error && <p className="text-[#e00]">{message.error.message}</p>}
           {!!copyText && (
             <CopyToClipboard text={copyText} onCopy={() => setCopied(true)}>

@@ -2,7 +2,7 @@ import { ofetch } from 'ofetch'
 import { getUserConfig } from '~services/user-config'
 import { ChatError, ErrorCode } from '~utils/errors'
 import { ConversationResponse } from './types'
-import { copyCookies } from './utils'
+import { copyCookies } from '~utils'
 
 const URLExp = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
 
@@ -53,7 +53,8 @@ export async function createConversation(): Promise<ConversationResponse> {
       throw new ChatError(message, ErrorCode.BING_UNAUTHORIZED)
     }
     if (resp.result.value === 'Forbidden') {
-      throw new ChatError(message, ErrorCode.BING_FORBIDDEN)
+      const { bingApiDomain } = await getUserConfig()
+      throw new ChatError(message, ErrorCode.BING_FORBIDDEN, bingApiDomain)
     }
     throw new Error(message)
   }

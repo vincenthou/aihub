@@ -1,6 +1,8 @@
 import WebSocketAsPromised from 'websocket-as-promised'
 import { BingConversationStyle, getUserConfig } from '~services/user-config'
 import { ChatError, ErrorCode } from '~utils/errors'
+import { fillURL } from '~utils/format'
+import { ExtraMessageInfo } from '~types/chat'
 import { AbstractBot, SendMessageParams } from '../abstract-bot'
 import { createConversation } from './api'
 import { ChatResponseMessage, ConversationInfo, InvocationEventType } from './types'
@@ -10,15 +12,6 @@ const styleOptionMap: Record<BingConversationStyle, string> = {
   [BingConversationStyle.Balanced]: 'harmonyv3',
   [BingConversationStyle.Creative]: 'h3imaginative',
   [BingConversationStyle.Precise]: 'h3precise',
-}
-
-const fillURL = (targetURL: string, path: string) => {
-	let url = targetURL;
-  if  (!url.endsWith('/'))  {
-    url = url+'/';
-  }
-	url = url + path;
-	return url;
 }
 
 const getWebSocketURL = (useBingChatHubProxy: string, bingApiDomain: string) => {
@@ -105,9 +98,37 @@ export class BingWebBot extends AbstractBot {
           params.onEvent({ type: 'DONE' })
           wsp.removeAllListeners()
           wsp.close()
-        } else if (event.type === 1 && event?.arguments[0]?.messages) {
-          const text = convertMessageToMarkdown(event.arguments[0].messages[0])
-          params.onEvent({ type: 'UPDATE_ANSWER', data: { text } })
+        } else if (event.type === 1) {
+          // 处理消息
+          if (event?.arguments[0]?.messages) {
+            const message: ChatResponseMessage = event.arguments[0].messages[0]
+            const text = convertMessageToMarkdown(message)
+            const data: { text: string, extra?: ExtraMessageInfo } = { text }
+            if (message.sourceAttributions) {
+              data.extra = {
+                source: message.sourceAttributions.map(item => ({
+                  name: item.providerDisplayName,
+                  url: item.seeMoreUrl,
+                }))
+              }
+            }
+            params.onEvent({ type: 'UPDATE_ANSWER', data })
+          }
+          // 处理剩余次数
+          // if (event?.arguments[0]?.throttling) {
+          //   const {
+          //     maxNumUserMessagesInConversation,
+          //     numUserMessagesInConversation
+          //   // eslint-disable-next-line no-unsafe-optional-chaining
+          //   } = event?.arguments[0]?.throttling
+          //   params.onEvent({
+          //     type: 'UPDATE_THROTTLING',
+          //     data: {
+          //       max: maxNumUserMessagesInConversation,
+          //       current: numUserMessagesInConversation,
+          //     }
+          //   })
+          // }
         } else if (event.type === 2) {
           const messages = event.item.messages as ChatResponseMessage[]
           const limited = messages?.some((message) => message.contentOrigin === 'TurnLimiter')

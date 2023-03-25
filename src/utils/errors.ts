@@ -11,8 +11,12 @@ export enum ErrorCode {
 
 export class ChatError extends Error {
   code: ErrorCode
-  constructor(message: string, code: ErrorCode) {
+  extra?: string
+  constructor(message: string, code: ErrorCode, extra?: string) {
     super(message)
     this.code = code
+    if (extra) {
+      this.extra = extra
+    }
   }
 }

@@ -8,3 +8,12 @@ export function formatAmount(value: number) {
     currency: 'USD',
   }).format(value)
 }
+
+export function fillURL(targetURL: string, path: string) {
+  let url = targetURL;
+  if  (!url.endsWith('/'))  {
+    url = url+'/';
+  }
+  url = url + path;
+  return url;
+}
