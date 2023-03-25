@@ -1,6 +1,10 @@
 import { ofetch } from 'ofetch'
+import { getUserConfig } from '~services/user-config'
 import { ChatError, ErrorCode } from '~utils/errors'
 import { ConversationResponse } from './types'
+import { copyCookies } from './utils'
+
+const URLExp = new RegExp('^(https?://)([-a-zA-z0-9]+\\.)+([-a-zA-z0-9]+)+');
 
 const createHeaders = () => ({
   'authority': 'edgeservices.bing.com',
@@ -25,8 +29,22 @@ const createHeaders = () => ({
   'x-edge-shopping-flag': '1',
 })
 
+const getCreateURL = async () => {
+  const { bingApiDomain } = await getUserConfig()
+  await copyCookies(bingApiDomain)
+
+  if (bingApiDomain) {
+    if (!URLExp.test(bingApiDomain)) {
+      throw new ChatError(`API设置错误${bingApiDomain}，粉丝可咨询up主`, ErrorCode.BING_DOMAIN_INVALID)
+    }
+    return `${bingApiDomain}/Create`
+  }
+  return 'https://www.bing.com/turing/conversation/create'
+}
+
 export async function createConversation(): Promise<ConversationResponse> {
-  const resp = await ofetch<ConversationResponse>('https://edgeservices.bing.com/edgesvc/turing/conversation/create', {
+  const createURL = await getCreateURL()
+  const resp = await ofetch<ConversationResponse>(createURL, {
     headers: createHeaders(),
   })
   if (resp.result.value !== 'Success') {

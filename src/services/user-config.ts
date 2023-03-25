@@ -16,6 +16,7 @@ export enum BingConversationStyle {
 const userConfigWithDefaultValue = {
   openaiApiKey: '',
   openaiApiHost: 'https://api.openai.com',
+  bingApiDomain: '',
   chatgptApiTemperature: 0.6,
   startupPage: StartupPage.Bing,
   bingConversationStyle: BingConversationStyle.Balanced,

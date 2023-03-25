@@ -15,8 +15,18 @@
     "type": "module"
   },
   "action": {},
-  "host_permissions": ["https://*.bing.com/", "https://*.openai.com/"],
-  "permissions": ["commands", "storage", "unlimitedStorage"],
+  "host_permissions": [
+    "http://*/*",
+		"https://*/*",
+		"ws://*/*",
+		"wss://*/*"
+  ],
+  "permissions": [
+    "commands",
+    "storage",
+    "cookies",
+    "unlimitedStorage"
+  ],
   "content_scripts": [
     {
       "matches": ["https://chat.openai.com/chat/*"],

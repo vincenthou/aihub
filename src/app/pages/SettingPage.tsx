@@ -18,6 +18,19 @@ function KDB(props: { text: string }) {
   )
 }
 
+function getAPIHost(apiHost: string | undefined) {
+  let newAPIHost: string | undefined = apiHost
+  if (apiHost) {
+    newAPIHost = apiHost.replace(/\/$/, '')
+    if (!apiHost.startsWith('http')) {
+      apiHost = 'https://' + apiHost
+    }
+  } else {
+    newAPIHost = undefined
+  }
+  return newAPIHost
+}
+
 function SettingPage() {
   const [shortcuts, setShortcuts] = useState<string[]>([])
   const [userConfig, setUserConfig] = useState<UserConfig | undefined>(undefined)
@@ -50,18 +63,13 @@ function SettingPage() {
   )
 
   const save = useCallback(async () => {
-    let apiHost = userConfig?.openaiApiHost
-    if (apiHost) {
-      apiHost = apiHost.replace(/\/$/, '')
-      if (!apiHost.startsWith('http')) {
-        apiHost = 'https://' + apiHost
-      }
-    } else {
-      apiHost = undefined
-    }
-    await updateUserConfig({ ...userConfig!, openaiApiHost: apiHost })
+    await updateUserConfig({
+      ...userConfig!,
+      openaiApiHost: getAPIHost(userConfig?.openaiApiHost),
+      bingApiDomain: getAPIHost(userConfig?.bingApiDomain),
+    })
     toast.success('保存成功')
-    setTimeout(() => location.reload(), 500)
+    setTimeout(() => history.back(), 500)
   }, [userConfig])
 
   if (!userConfig) {
@@ -127,35 +135,53 @@ function SettingPage() {
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <p className="font-bold text-xl">Bing配置</p>
-          <div className="flex flex-row gap-3 items-center">
-            <p className="font-medium text-base">对话风格</p>
-            <div className="w-[150px]">
-              <Select
-                options={[
-                  {
-                    name: '创意',
-                    value: BingConversationStyle.Creative,
-                  },
-                  {
-                    name: '平衡',
-                    value: BingConversationStyle.Balanced,
-                  },
-                  {
-                    name: '精准',
-                    value: BingConversationStyle.Precise,
-                  },
-                ]}
-                value={userConfig.bingConversationStyle}
-                onChange={(v) => updateConfigValue({ bingConversationStyle: v })}
+          <div className="flex flex-row gap-8">
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base">对话风格</p>
+              <div className="w-[300px]">
+                <Select
+                  options={[
+                    {
+                      name: '创意',
+                      value: BingConversationStyle.Creative,
+                    },
+                    {
+                      name: '平衡',
+                      value: BingConversationStyle.Balanced,
+                    },
+                    {
+                      name: '精准',
+                      value: BingConversationStyle.Precise,
+                    },
+                  ]}
+                  value={userConfig.bingConversationStyle}
+                  onChange={(v) => updateConfigValue({ bingConversationStyle: v })}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base">
+                API 域名
+                <span className="font-normal text-xs bg-red-300 p-1">
+                  ！注意不要使用任何不信任的人分享的地址
+                </span>
+              </p>
+              <Input
+                className="w-[300px]"
+                placeholder="https://mydomain.com"
+                value={userConfig.bingApiDomain}
+                onChange={(e) => updateConfigValue({ bingApiDomain: e.currentTarget.value })}
               />
+              <div className="font-normal text-xs bg-red-300 p-1">
+                该方式会获取你的登录信息，所以请用自己的或者新账号
+              </div>
             </div>
           </div>
         </div>
       </div>
       <Button color={dirty ? 'primary' : 'flat'} text="保存" className="w-fit mt-10 mb-5" onClick={save} />
-      <Button color="flat" text="返回聊天界面" className="w-fit mt-10 ml-5 mb-5" onClick={() => history.back()} />
       <Toaster position="top-right" />
     </PagePanel>
   )
