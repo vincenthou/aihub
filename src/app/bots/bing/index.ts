@@ -12,6 +12,22 @@ const styleOptionMap: Record<BingConversationStyle, string> = {
   [BingConversationStyle.Precise]: 'h3precise',
 }
 
+const fillURL = (targetURL: string, path: string) => {
+	let url = targetURL;
+  if  (!url.endsWith('/'))  {
+    url = url+'/';
+  }
+	url = url + path;
+	return url;
+}
+
+const getWebSocketURL = (useBingChatHubProxy: string, bingApiDomain: string) => {
+  if (useBingChatHubProxy === 'true' && bingApiDomain) {
+    return fillURL(bingApiDomain.replace('http','ws'),"ChatHub");
+  }
+  return 'wss://sydney.bing.com/sydney/ChatHub'
+}
+
 export class BingWebBot extends AbstractBot {
   private conversationContext?: ConversationInfo
 
@@ -53,7 +69,10 @@ export class BingWebBot extends AbstractBot {
 
   async doSendMessage(params: SendMessageParams) {
     if (!this.conversationContext) {
-      const [conversation, { bingConversationStyle }] = await Promise.all([createConversation(), getUserConfig()])
+      const [
+        conversation,
+        { bingConversationStyle }
+      ] = await Promise.all([createConversation(), getUserConfig()])
       this.conversationContext = {
         conversationId: conversation.conversationId,
         conversationSignature: conversation.conversationSignature,
@@ -65,7 +84,11 @@ export class BingWebBot extends AbstractBot {
 
     const conversation = this.conversationContext!
 
-    const wsp = new WebSocketAsPromised('wss://sydney.bing.com/sydney/ChatHub', {
+    const { useBingChatHubProxy, bingApiDomain } = await getUserConfig()
+    const wsp = new WebSocketAsPromised(getWebSocketURL(
+      useBingChatHubProxy,
+      bingApiDomain
+    ), {
       packMessage: websocketUtils.packMessage,
       unpackMessage: websocketUtils.unpackMessage,
     })

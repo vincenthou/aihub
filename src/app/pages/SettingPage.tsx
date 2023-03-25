@@ -140,7 +140,7 @@ function SettingPage() {
           <div className="flex flex-row gap-8">
             <div className="flex flex-col gap-1">
               <p className="font-medium text-base">对话风格</p>
-              <div className="w-[300px]">
+              <div className="w-[150px]">
                 <Select
                   options={[
                     {
@@ -176,6 +176,33 @@ function SettingPage() {
               />
               <div className="font-normal text-xs bg-red-300 p-1">
                 该方式会获取你的登录信息，所以请用自己的或者新账号
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base">
+                对话增强
+                <span className="font-normal text-xs bg-blue-300 p-1">
+                正常情况无需开启这个选项
+                </span>
+              </p>
+              <div className="w-[150px]">
+                <Select
+                  options={[
+                    {
+                      name: '是',
+                      value: 'true',
+                    },
+                    {
+                      name: '否',
+                      value: '',
+                    },
+                  ]}
+                  value={userConfig.useBingChatHubProxy}
+                  onChange={(v) => updateConfigValue({ useBingChatHubProxy: v })}
+                />
+                <div className="font-normal text-xs bg-red-300 p-1">
+                  开启后每条对话消息也会使用API域名，仅在对话无法进行时开启
+                </div>
               </div>
             </div>
           </div>
