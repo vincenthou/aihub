@@ -31,12 +31,12 @@ const createHeaders = () => ({
 
 const getCreateURL = async () => {
   const { bingApiDomain } = await getUserConfig()
-  await copyCookies(bingApiDomain)
 
   if (bingApiDomain) {
     if (!URLExp.test(bingApiDomain)) {
       throw new ChatError(`API设置错误${bingApiDomain}，粉丝可咨询up主`, ErrorCode.BING_DOMAIN_INVALID)
     }
+    await copyCookies(bingApiDomain)
     return `${bingApiDomain}/Create`
   }
   return 'https://www.bing.com/turing/conversation/create'
