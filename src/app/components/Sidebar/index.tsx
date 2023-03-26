@@ -19,7 +19,7 @@ let conversationsCache: ChatConversation[] = []
 
 const Sidebar: FC<{ chatId?: string }> = (props) => {
   const conversations = useContext(ConversationsContext)
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false)
   const [isShown, setIsShown] = useState(true)
@@ -41,7 +41,11 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
           }
         }
       }
-      reader.readAsText(inputRef.current.files[0]);
+      if (inputRef.current?.files) {
+        reader.readAsText(inputRef.current?.files[0]);
+      } else {
+        toast.error('加载文件失败，请刷新重试')
+      }
     }
   }
 
