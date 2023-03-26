@@ -1,45 +1,48 @@
+import { useAtomValue } from 'jotai'
+import { uniqBy } from 'lodash-es'
 import { FC, useState, useCallback, useMemo } from 'react'
 import { PaperAirplaneIcon } from '@heroicons/react/20/solid'
 import Button from '~app/components/Button'
 import ChatMessageInput from '~app/components/Chat/ChatMessageInput'
 import { useChat } from '~app/hooks/use-chat'
+import { compareBotsAtom } from '~app/state'
 import { BotId, ChatConversation } from '~types'
 import ConversationPanel from '../components/Chat/ConversationPanel'
 
 const MultiBotChatPanel: FC = () => {
-  const [conversations, setConversations] = useState<ChatConversation[]>([useChat(BotId.CHATGPT), useChat(BotId.BING)])
-  // TODO: setConversations 改一起显示的聊天框bot
-  const [leftChat, rightChat] = conversations
+  const [leftBotId, rightBotId] = useAtomValue(compareBotsAtom)
+  const leftChat = useChat(leftBotId)
+  const rightChat = useChat(rightBotId)
+  const chats = useMemo(() => [leftChat, rightChat], [leftChat, rightChat])
 
-  const generating = useMemo(
-    () => leftChat.generating || rightChat.generating,
-    [leftChat.generating, rightChat.generating],
-  )
+  const generating = useMemo(() => chats.some((c) => c.generating), [chats])
 
   const onUserSendMessage = useCallback(
-    (input: string) => {
-      // 限制只能群发，不能对对比的界面单发
-      leftChat.sendMessage(input)
-      rightChat.sendMessage(input)
+    (input: string, botId?: BotId) => {
+      if (botId) {
+        const chat = chats.find((c) => c.botId === botId)
+        chat?.sendMessage(input)
+      } else {
+        uniqBy(chats, (c) => c.botId).forEach((c) => c.sendMessage(input))
+      }
     },
-    [leftChat, rightChat],
+    [chats],
   )
 
   return (
     <div className="grid grid-cols-2 grid-rows-[1fr_auto] overflow-hidden gap-5 flex-1">
       {
-        conversations.map(conversation => (
+        chats.map((chat, index) => (
           <ConversationPanel
-            key={conversation.botId}
-            chat={conversation}
+            key={`${chat.botId}-${index}`}
+            index={index}
+            chat={chat}
             mode="compact"
             onUserSendMessage={onUserSendMessage}
             // botId={conversation.botId}
             // messages={conversation.messages}
-            // onUserSendMessage={onUserSendMessage}
             // generating={conversation.generating}
             // stopGenerating={conversation.stopGenerating}
-            // mode="compact"
             // resetConversation={conversation.resetConversation}
           />
         ))

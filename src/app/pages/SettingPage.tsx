@@ -174,8 +174,14 @@ function SettingPage() {
                 value={userConfig.bingApiDomain}
                 onChange={(e) => updateConfigValue({ bingApiDomain: e.currentTarget.value })}
               />
-              <div className="font-normal text-xs bg-red-300 p-1">
-                该方式会获取你的登录信息，所以请用自己的或者新账号
+              <div className="font-normal text-xs bg-red-300 p-1 w-[300px]">
+                该方式会获取你的登录信息，所以请用自己的域名，使用的方法可以参考
+                <a
+                  className="underline text-blue-400"
+                  href='https://seigy6zzam.feishu.cn/docx/X8TNdStoao4MiLx9nA2clGuWnmX'
+                  target="_blank"
+                  rel="noreferrer"
+                >👉这篇文章</a>
               </div>
             </div>
             <div className="flex flex-col gap-1">

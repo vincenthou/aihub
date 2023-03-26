@@ -31,6 +31,7 @@ interface Props {
   chat: ChatConversation
   isHistory?: boolean
   renderExtraInfo?: JSX.Element | null
+  index?: number
 }
 
 const buttonClassName = 'flex cursor-pointer absolute items-center text-white/50 dark:text-white'
@@ -44,6 +45,7 @@ const ConversationPanel: FC<Props> = (props) => {
     stopGenerating,
     generating
   } = chat
+
   const marginClass = mode === 'compact' ? 'mx-5' : 'mx-10'
   const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[botId])
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
@@ -116,7 +118,7 @@ const ConversationPanel: FC<Props> = (props) => {
           )}
           <img src={botInfo.avatar} className="w-5 h-5 object-contain rounded-full" />
           <span className="font-semibold text-white/50 dark:text-white text-sm">{botInfo.name}</span>
-          <BotSwitcher mode={mode} botId={botInfo.id} onChange={setBotInfo} />
+          <BotSwitcher mode={mode} botId={botInfo.id} index={props.index} onChange={setBotInfo} />
           {renderExtraInfo}
           {hasAction && (<>
             <CopyToClipboard text={messagesText} onCopy={onCopySuccess}>

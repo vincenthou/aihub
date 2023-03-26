@@ -1,7 +1,10 @@
 import { Menu, Transition } from '@headlessui/react'
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useCallback } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { CHATBOTS } from '~/app/consts'
+import { useSetAtom } from 'jotai'
+import { isUndefined } from 'lodash-es'
+import { compareBotsAtom } from '~app/state'
 import { BotId, BotProps } from '~types'
 import NavLink from '../NavLink'
 
@@ -9,12 +12,28 @@ interface Props {
   mode: string
   botId: BotId
   onChange: (botProps: BotProps) => void
+  index?: number
 }
 
 const compactItemClassName = 'flex h-10 px-3 py-1 items-center cursor-pointer rounded-md'
 
 const BotSwitcher: FC<Props> = (props) => {
   const { mode, botId, onChange } = props
+  const setCompareBots = useSetAtom(compareBotsAtom)
+
+  const onSelect = useCallback(
+    (botId: BotId) => {
+      // 只处理并排展示的情况
+      if (!isUndefined(props.index)) {
+        setCompareBots((bots) => {
+          const newBots = [...bots] as [BotId, BotId]
+          newBots[props.index!] = botId
+          return newBots
+        })
+      }
+    },
+    [props.index, setCompareBots],
+  )
 
   return (
     <div className="z-10 relative text-right">
@@ -45,6 +64,7 @@ const BotSwitcher: FC<Props> = (props) => {
                       className={`${compactItemClassName} ${botId === key ? 'bg-white/70 dark:bg-gray-500' : ''}`}
                       onClick={() => {
                         onChange(value)
+                        onSelect(value.id)
                         close()
                       }}
                     >
