@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { FC, useCallback, useMemo, useState, useRef, useContext } from 'react'
 import { BiMessageAdd } from 'react-icons/bi'
+import { AiFillNotification, AiOutlineClose } from 'react-icons/ai'
 import {
   PhotoIcon,
   PaperAirplaneIcon,
@@ -46,6 +47,7 @@ const ConversationPanel: FC<Props> = (props) => {
   const marginClass = mode === 'compact' ? 'mx-5' : 'mx-10'
   const [botInfo, setBotInfo] = useState<BotProps>(CHATBOTS[botId])
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const [isNotificationShown, setIsNotificationShown] = useState<boolean>(true)
   const messagesText = messages?.reduce((acc, message) => `${acc}#${message.author}\n${message.text}\n\n`, '')
   const messagesRef = useRef<{ export: () => void }>(null);
   const conversations = useContext(ConversationsContext)
@@ -87,6 +89,7 @@ const ConversationPanel: FC<Props> = (props) => {
   const onCopySuccess = () => toast.success('当前对话以Markdown格式复制成功，你可以粘贴到任意空白文本')
 
   const hasAction = mode === 'full' && !!messages?.length
+  const announcement = conversations?.notifications?.data?.announcement
 
   return (
     <ConversationContext.Provider value={context}>
@@ -144,6 +147,32 @@ const ConversationPanel: FC<Props> = (props) => {
             </button>
           </>)}
         </div>
+        {announcement?.show && isNotificationShown && <div className="relative flex mt-1 mx-10 bg-[#4987FC] p-2 text-white text-ms">
+          <AiFillNotification
+            className="mr-2"
+            size="1em"
+            color="#fff"
+            title="版本信息"
+          />
+          <p className="text-xs">
+            {announcement?.message}
+            <a
+              className="underline"
+              href={announcement?.link}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {announcement?.linkTitle}
+            </a>
+          </p>
+          <AiOutlineClose
+            className="mr-2 cursor-pointer absolute right-0"
+            size="1em"
+            color="#fff"
+            title="关闭公告"
+            onClick={() => setIsNotificationShown(false)}
+          />
+        </div>}
         <ChatMessageList
           ref={messagesRef}
           botId={botInfo.id}

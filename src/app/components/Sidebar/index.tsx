@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import fileDownload from 'js-file-download';
 import toast, { Toaster } from 'react-hot-toast'
 import { MdOutlineFeedback, MdHelp } from 'react-icons/md'
-import { AiFillSetting, AiFillDelete } from 'react-icons/ai'
+import { AiFillSetting, AiFillDelete, AiFillInfoCircle } from 'react-icons/ai'
 import { BiImport, BiExport } from 'react-icons/bi'
 import logo from '~/assets/logo.svg'
 import logoDark from '~/assets/logo-dark.svg'
@@ -65,6 +65,8 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
     setIsResetDialogOpen(false)
   }
 
+  const version = conversations?.notifications?.data?.version
+
   return (
     <aside className="flex h-full flex-1 flex-col space-y-1 p-2">
       <div className="flex justify-between py-2">
@@ -73,11 +75,13 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
           <img src={logoDark} className="h-8 hidden dark:block" />
         </Link>
         <p className="text-white text-xs flex-1 ml-2">
-          基于开源项目<br></br>可以免费使用
+          基于<a className="underline" href="https://github.com/chathub-dev/chathub" target="_blank" rel="noreferrer">开源项目</a>增强
+          <br></br>
+          由<a className="underline" href="https://space.bilibili.com/1532854091" target="_blank" rel="noreferrer">AI乐桃为💗发电</a>
         </p>
         <div className="flex flex-row mt-1 ml-3 gap-[10px]">
           <Tooltip content="给我反馈">
-            <a href="https://www.bilibili.com/video/BV1NM411p7CN/" target="_blank" rel="noreferrer" >
+            <a href="https://vika.cn/share/shrQUgYknjwPQXsjzCmQi" target="_blank" rel="noreferrer" >
               <MdOutlineFeedback size="1.5em" color="#fff"/>
             </a>
           </Tooltip>
@@ -115,7 +119,7 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
         ) : <p className="mt-5 flex justify-center text-dark text-sm dark:text-white/50">暂无历史对话</p>
       }
       </div>
-      <div className="flex justify-between py-2">
+      <div className="flex justify-between py-2 border-b border-white/20">
         <p className="text-white text-xs flex-1 ml-2">
           历史对话管理（导入、导出和删除）
         </p>
@@ -163,6 +167,25 @@ const Sidebar: FC<{ chatId?: string }> = (props) => {
           onClose={onClose}
         />
       </div>
+      {version?.show && <div className="flex justify-between py-2 text-white text-ms">
+        <AiFillInfoCircle
+          className="mr-2 cursor-pointer"
+          size="1em"
+          color="#fff"
+          title="版本信息"
+        />
+        <p className="text-xs">
+          {version?.message}
+          <a
+            className="text-xs underline"
+            href={version?.link}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {version?.linkTitle}
+          </a>
+        </p>
+      </div>}
     </aside>
   )
 }

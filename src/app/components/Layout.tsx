@@ -11,12 +11,14 @@ import {
   importAllLocalConversations,
   removeAllLocalConversations,
 } from '~services/conversations'
+import { loadRemoteNotifications } from '~services/notify'
 import { ChatConversation } from '~types'
 
 function Layout() {
   const chatId = location.hash.split('?')?.[1]?.split('=')?.[1]
   
   const query = useSWR('local-conversations', () => loadLocalConversations(), { suspense: true })
+  const notifications = useSWR('notifications', () => loadRemoteNotifications(), { suspense: true })
   const create = useCallback(
     async (conversation: ChatConversation) => {
       if (conversation.generating) {
@@ -52,7 +54,7 @@ function Layout() {
   return (
     <div className="dark h-screen">
       <main className="bg-white dark:bg-gray-800 flex backdrop-blur-2xl h-full">
-        <ConversationsContext.Provider value={{ query, create, remove, importAll, removeAll }}>
+        <ConversationsContext.Provider value={{ query, create, remove, importAll, removeAll, notifications }}>
           <Resizable
             defaultSize={{ height: '100%', width: 256 }}
             minWidth={256}
