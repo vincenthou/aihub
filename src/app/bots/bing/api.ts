@@ -47,6 +47,11 @@ export async function createConversation(): Promise<ConversationResponse> {
   const createURL = await getCreateURL()
   const resp = await ofetch<ConversationResponse>(createURL, {
     headers: createHeaders(),
+  }).catch((error) => {
+    if (error.status === 404) {
+      throw new ChatError('Bing限制我们的访问，需要一些小技巧', ErrorCode.BING_NOT_FOUND)
+    }
+    throw new ChatError(`出现了未知错误，请点击左上方反馈告诉up主${error.message}`, ErrorCode.UNKOWN_ERROR)
   })
   if (!resp) {
     throw new ChatError('Bing限制了你的访问，请求访问返回空内容，可以尝试更改魔法节点，或者调整配置中x-forwared-for的IP', ErrorCode.BING_RESPONSE_EMPTY)

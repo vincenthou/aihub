@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { ofetch } from 'ofetch'
-import { FC, useCallback, useContext, useState } from 'react'
+import { FC, useCallback, useContext, useState, ReactElement } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { chatGPTClient } from '~app/bots/chatgpt-webapp/client'
-import { ConversationContext } from '~app/context'
+import { ConversationContext, ConversationContextValue } from '~app/context'
 import { copyCookies } from '~utils'
 import { ChatError, ErrorCode } from '~utils/errors'
 import { fillURL } from '~utils/format'
@@ -61,34 +61,51 @@ const ChatGPTAuthErrorAction = () => {
   )
 }
 
+const handleBingUnauthorized = () => (
+  <a href="https://bing.com" target="_blank" rel="noreferrer">
+    <Button color="primary" text="先在bing.com登录你的账号" size="small" />
+  </a>
+)
+const handleBingForbidden = (error: ChatError) => (
+  <>
+    <Button
+      color="primary"
+      text="需要自己先到 bing.com/new 手动申请，或者点我👆尝试立即通过"
+      size="small"
+      onClick={() => tryNewBing(error.extra)}
+    />
+    <Toaster position="top-right" />
+  </>
+)
+const handleChatGPTUnauthorized = () => <ChatGPTAuthErrorAction />
+const handlerBingLimit = (_: ChatError, conversation: ConversationContextValue | null) => (
+  <Button
+    color="primary"
+    text="重置对话"
+    size="small"
+    onClick={() => conversation?.reset()}
+  />
+)
+const handlerBingNotFound = () => <a href="https://seigy6zzam.feishu.cn/docx/KTp7dtDJZoSbbFxxmUpcUfXznhc#DCy4doqamocU0AxPkkocGGR0nJ1" target="_blank" rel="noreferrer">
+  <Button color="primary" text="👆有魔法和无魔法解法点我参考" size="small" />
+</a>
+
+type ErrorHandler = (error: ChatError, conversation: ConversationContextValue | null) => ReactElement<any, any> | null
+
+const errorHandler: Record<string, ErrorHandler> = {
+  [ErrorCode.BING_UNAUTHORIZED]: handleBingUnauthorized,
+  [ErrorCode.BING_FORBIDDEN]: handleBingForbidden,
+  [ErrorCode.CHATGPT_CLOUDFLARE]: handleChatGPTUnauthorized,
+  [ErrorCode.CHATGPT_UNAUTHORIZED]: handleChatGPTUnauthorized,
+  [ErrorCode.CONVERSATION_LIMIT]: handlerBingLimit,
+  [ErrorCode.BING_NOT_FOUND]: handlerBingNotFound,
+}
+
+// 特殊展示各种异常场景
 const ErrorAction: FC<{ error: ChatError }> = ({ error }) => {
   const conversation = useContext(ConversationContext)
-
-  if (error.code === ErrorCode.BING_UNAUTHORIZED) {
-    return (
-      <a href="https://bing.com" target="_blank" rel="noreferrer">
-        <Button color="primary" text="先在bing.com登录你的账号" size="small" />
-      </a>
-    )
-  }
-  if (error.code === ErrorCode.BING_FORBIDDEN) {
-    return (
-      <>
-        <Button
-          color="primary"
-          text="需要自己先到 bing.com/new 手动申请，或者点我👆尝试立即通过"
-          size="small"
-          onClick={() => tryNewBing(error.extra)}
-        />
-        <Toaster position="top-right" />
-      </>
-    )
-  }
-  if (error.code === ErrorCode.CHATGPT_CLOUDFLARE || error.code === ErrorCode.CHATGPT_UNAUTHORIZED) {
-    return <ChatGPTAuthErrorAction />
-  }
-  if (error.code === ErrorCode.CONVERSATION_LIMIT) {
-    return <Button color="primary" text="重置对话" size="small" onClick={() => conversation?.reset()} />
+  if (errorHandler[error.code]) {
+    return errorHandler[error.code](error, conversation)
   }
   return null
 }
