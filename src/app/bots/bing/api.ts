@@ -27,6 +27,7 @@ const createHeaders = () => ({
   'upgrade-insecure-requests': '1',
   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69',
   'x-edge-shopping-flag': '1',
+  // 'x-forwarded-for': '1.1.1.1'
 })
 
 const getCreateURL = async () => {
@@ -47,6 +48,9 @@ export async function createConversation(): Promise<ConversationResponse> {
   const resp = await ofetch<ConversationResponse>(createURL, {
     headers: createHeaders(),
   })
+  if (!resp) {
+    throw new ChatError('Bing限制了你的访问，请求访问返回空内容，可以尝试更改魔法节点，或者调整配置中x-forwared-for的IP', ErrorCode.BING_RESPONSE_EMPTY)
+  }
   if (resp.result.value !== 'Success') {
     const message = `${resp.result.value}: ${resp.result.message}`
     if (resp.result.value === 'UnauthorizedRequest') {
